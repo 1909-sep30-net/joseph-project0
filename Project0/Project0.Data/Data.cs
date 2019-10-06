@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Project0.Data
 {
-    class Data
+    public class Data
     {
     }
 }

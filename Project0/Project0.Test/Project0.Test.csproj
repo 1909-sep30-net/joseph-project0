@@ -13,4 +13,10 @@
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Project0.Business\Project0.Business.csproj" />
+    <ProjectReference Include="..\Project0.Data\Project0.Data.csproj" />
+    <ProjectReference Include="..\Project0.UserInterface\Project0.UserInterface.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -27,7 +27,7 @@ namespace Project0.Business
             }
         }
 
-        Product(string name, int amount)
+        public Product(string name, int amount)
         {
             if (name.Length == 0)
                 throw new ArgumentException("Name must not be empty.", nameof(name));

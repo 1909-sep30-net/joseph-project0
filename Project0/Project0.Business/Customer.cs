@@ -9,7 +9,17 @@ namespace Project0.Business
         private string _firstName;
         private string _lastName;
 
-        Customer(string firstName, string lastName)
+        public string FirstName
+        {
+            get => _firstName;
+        }
+
+        public string LastName
+        {
+            get => _lastName;
+        }
+
+        public Customer(string firstName, string lastName)
         {
             if (firstName.Length == 0)
                 throw new ArgumentException("First name cannot be empty.", nameof(firstName));
