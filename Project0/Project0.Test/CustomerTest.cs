@@ -6,6 +6,7 @@ namespace Project0.Test
 {
     public class CustomerTest
     {
+
         [Fact]
         public void First_Name_Empty_Throws_ArgumentException()
         {
@@ -19,7 +20,7 @@ namespace Project0.Test
         }
 
         [Fact]
-        public void First_Name_Returns_Corectly()
+        public void First_Name_Property_Returns_Corectly()
         {
             string firstName = "Joseph";
             string lastName = "Mohrbacher";
@@ -29,7 +30,7 @@ namespace Project0.Test
         }
 
         [Fact]
-        public void Last_Name_Returns_Corectly()
+        public void Last_Name_Property_Returns_Corectly()
         {
             string firstName = "Joseph";
             string lastName = "Mohrbacher";
