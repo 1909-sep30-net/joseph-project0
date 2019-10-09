@@ -51,14 +51,11 @@ namespace Project0.Test
             Customer customer = new Customer("firstName", "lastName");
             Order order = new Order(location, customer);
 
-            List<Product> products = new List<Product>()
-            { new Product("a", 30),
-            };
+            List<Product> products = new List<Product>() { new Product("a", 30) };
 
-            Product product = new Product("a", 10);
-            order.AddProduct(product);
-            order.AddProduct(product);
-            order.AddProduct(product);
+            order.AddProduct(new Product("a", 10));
+            order.AddProduct(new Product("a", 10));
+            order.AddProduct(new Product("a", 10));
 
             Assert.Equal(products, order.OrderPoducts);
         }

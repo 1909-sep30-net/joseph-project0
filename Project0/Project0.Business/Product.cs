@@ -48,7 +48,7 @@ namespace Project0.Business
         }
         public void BuyQuantity(int quantity)
         {
-            if (quantity > 0 || quantity <= _quantity)
+            if (quantity < 0 || quantity > _quantity)
                 throw new ArgumentException($"Quantity of {quantity} product is out of range");
 
             _quantity -= quantity;

@@ -41,7 +41,6 @@ namespace Project0.Test
         }
 
         [Theory]
-        [InlineData(0)]
         [InlineData(-1)]
         public void AddQuantity_Quantity_Out_Of_range_Throws_ArgumentException(int a)
         {
@@ -67,7 +66,6 @@ namespace Project0.Test
         public void BuyQuantity_Subtracts_Correctly(int a, int b)
         {
             Product product = new Product("a", a);
-            product.AddQuantity(a);
             product.BuyQuantity(a);
 
             Assert.Equal(b, product.Quantity);
