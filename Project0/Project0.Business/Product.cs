@@ -28,7 +28,7 @@ namespace Project0.Business
 
             _name = name;
 
-            if (quantity <= 0)
+            if (quantity < 0)
                 throw new ArgumentException("Amount must be grater than 0", nameof(quantity));
 
             _quantity = quantity;

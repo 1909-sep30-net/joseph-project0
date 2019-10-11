@@ -18,6 +18,10 @@ namespace Project0.Business
         public List<Product> Inventory { get => _inventory; }
         public List<Order> Orders { get => _orders; }
 
+        public void AddOrder(Order order)
+        {
+            _orders.Add(order);
+        }
         /// <summary>
         /// Location must hoave a valid name
         /// Trows ArumentException if name is empty

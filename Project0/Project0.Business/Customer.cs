@@ -17,6 +17,11 @@ namespace Project0.Business
         public string LastName { get => _lastName; }
         public List<Order> Orders { get => _orders; }
 
+        public void AddOrder(Order order)
+        {
+            _orders.Add(order);
+        }
+
         /// <summary>
         /// each customer object must contain a non empty first and last name.
         /// throws an ArgumentExcetion if either is an emtpy string.
