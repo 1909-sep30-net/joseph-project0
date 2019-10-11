@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Project0.Data.Entities
 using Project0.Business;
 using Project0.Data;
 
@@ -28,7 +31,6 @@ namespace Project0.UserInterface
             new Product("product b", 10, 2.0M),
             new Product("product c", 10, 3.0M),
         };
-
 
         public static void Init()
         {
@@ -367,6 +369,11 @@ namespace Project0.UserInterface
         static void Main(string[] args)
         {
             Init();
+
+            DbContextOptions<Project0Context> options = new DbContextOptionsBuilder<Project0Context>()
+                .UseSqlServer(connectionString)
+                .UseLoggerFactory(AppLoggerFactory)
+                .Options;
 
             string option = "";
             while (option != "Q")

@@ -14,6 +14,7 @@ namespace Project0.Data.Entities
         public int CustomerId { get; set; }
         public int LocationId { get; set; }
         public DateTime OrderDate { get; set; }
+        public decimal TotalCost { get; set; }
 
         public virtual Customers Customer { get; set; }
         public virtual Locations Location { get; set; }
