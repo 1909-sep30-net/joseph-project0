@@ -10,13 +10,13 @@ namespace Project0.Test
         [Fact]
         public void Costructor_Empty_Name_Throws_ArgumentException()
         {
-            Assert.ThrowsAny<ArgumentException>(() => new Product(string.Empty, 1));
+            Assert.ThrowsAny<ArgumentException>(() => new Product(string.Empty, 1, 1.0M));
         }
 
         [Fact]
         public void Costructor_Quantity_Out_Of_Range_Throws_ArgumentException()
         {
-            Assert.ThrowsAny<ArgumentException>(() => new Product("a", -1));
+            Assert.ThrowsAny<ArgumentException>(() => new Product("a", -1, 1.0M));
         }
 
         [Fact]
@@ -24,7 +24,8 @@ namespace Project0.Test
         {
             string name = "a";
             int quantity = 1;
-            Product product = new Product(name, quantity);
+            decimal cost = 1.0M;
+            Product product = new Product(name, quantity, cost);
 
             Assert.Equal(name, product.Name);
         }
@@ -35,7 +36,8 @@ namespace Project0.Test
         {
             string name = "a";
             int quantity = 1;
-            Product product = new Product(name, quantity);
+            decimal cost = 1.0M;
+            Product product = new Product(name, quantity, cost);
 
             Assert.Equal(quantity, product.Quantity);
         }
@@ -44,7 +46,7 @@ namespace Project0.Test
         [InlineData(-1)]
         public void AddQuantity_Quantity_Out_Of_range_Throws_ArgumentException(int a)
         {
-            Product product = new Product("a", 1);
+            Product product = new Product("a", 1, 1.0M);
 
             Assert.ThrowsAny<ArgumentException>(() => product.AddQuantity(a));
         }
@@ -54,7 +56,7 @@ namespace Project0.Test
         [InlineData(5, 10)]
         public void AddQuantity_Adds_Correctly(int a, int b)
         {
-            Product product = new Product("a", a);
+            Product product = new Product("a", a, 1.0M);
             product.AddQuantity(a);
 
             Assert.Equal(b, product.Quantity);
@@ -65,7 +67,7 @@ namespace Project0.Test
         [InlineData(5, 0)]
         public void BuyQuantity_Subtracts_Correctly(int a, int b)
         {
-            Product product = new Product("a", a);
+            Product product = new Product("a", a, 1.0M);
             product.BuyQuantity(a);
 
             Assert.Equal(b, product.Quantity);

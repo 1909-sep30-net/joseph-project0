@@ -8,48 +8,48 @@ namespace Project0.UserInterface
 
     class Program
     {
-        public static List<Location> locations = new List<Location>()
+        public static List<Location> _locations = new List<Location>()
         {
             new Location("store a"),
             new Location("store b"),
             new Location("store c")
         };
 
-        public static List<Customer> customers = new List<Customer>()
+        public static List<Customer> _customers = new List<Customer>()
         {
             new Customer("customer", "a"),
             new Customer("customer", "b"),
             new Customer("customer", "c")
         };
 
-        public static List<Product> products = new List<Product>()
+        public static List<Product> _products = new List<Product>()
         {
-            new Product("product a", 10),
-            new Product("product b", 10),
-            new Product("product c", 10),
+            new Product("product a", 10, 1.0M),
+            new Product("product b", 10, 2.0M),
+            new Product("product c", 10, 3.0M),
         };
 
 
         public static void Init()
         {
-            foreach (Location l in locations)
-                foreach (Product p in products)
-                    l.AddProduct(p);
+            foreach (Location l in _locations)
+                foreach (Product p in _products)
+                    l.AddProduct(new Product(p.Name, p.Quantity, p.CostPerUnit));
         }
 
         public static void PrintCustomers()
         {
-            for (int i = 0; i < customers.Count; i++)
+            for (int i = 0; i < _customers.Count; i++)
             {
-                Console.WriteLine($"[{i}] - {customers[i].FirstName} {customers[i].LastName}");
+                Console.WriteLine($"[{i}] - {_customers[i].FirstName} {_customers[i].LastName}");
             }
         }
 
         public static void PrintLocations()
         {
-            for (int i = 0; i < locations.Count; i++)
+            for (int i = 0; i < _locations.Count; i++)
             {
-                Console.WriteLine($"[{i}] - {locations[i].LocationName}");
+                Console.WriteLine($"[{i}] - {_locations[i].LocationName}");
             }
         }
 
@@ -68,27 +68,29 @@ namespace Project0.UserInterface
             List<Product> products = order.OrderPoducts;
             string location = order.OrderLocation.LocationName;
             string customer = order.OrderCustomer.FirstName + " " + order.OrderCustomer.LastName;
-            Console.WriteLine($"Location - [{location}] - Customer - [{customer}]");
-            Console.Write("Products - ");
+            Console.WriteLine($"Location = [{location}] Customer = [{customer}]");
+            Console.Write("Products = ");
 
             foreach (Product product in products)
                 Console.Write($"[{product.Name} = {product.Quantity}] ");
 
-            Console.WriteLine("]");
+            Console.WriteLine($"] Cost = [{order.TotalCost}]");
+
+
         }
 
         public static int GetValidCustomerIndex()
         {
             int customerIndex = -1;
 
-            if (customers.Count == 0)
+            if (_customers.Count == 0)
             {
                 Console.WriteLine("There are no customers: Press enter to continue");
                 Console.ReadLine();
                 return customerIndex;
             }
 
-            while (customerIndex < 0 || customerIndex >= customers.Count)
+            while (customerIndex < 0 || customerIndex >= _customers.Count)
             {
                 Console.Clear();
                 PrintCustomers();
@@ -110,7 +112,7 @@ namespace Project0.UserInterface
         {
             int locationIndex = -1;
 
-            if (locations.Count == 0)
+            if (_locations.Count == 0)
             {
                 Console.WriteLine("There are no locations: Press enter to continue");
                 Console.ReadLine();
@@ -126,7 +128,7 @@ namespace Project0.UserInterface
                 Console.Write("Select a location: ");
                 string input = Console.ReadLine();
 
-                if (int.TryParse(input, out locationIndex) && (locationIndex >= 0 && locationIndex < locations.Count))
+                if (int.TryParse(input, out locationIndex) && (locationIndex >= 0 && locationIndex < _locations.Count))
                 {
                     validIndex = true;
                 }
@@ -181,7 +183,7 @@ namespace Project0.UserInterface
 
             if (customerIndex != -1)
             {
-                List<Order> orders = customers[customerIndex].Orders;
+                List<Order> orders = _customers[customerIndex].Orders;
 
                 Console.Clear();
                 if (orders.Count != 0)
@@ -205,7 +207,7 @@ namespace Project0.UserInterface
             int locationIndex = GetValidLocationIndex();
             if (locationIndex != -1)
             {
-                List<Order> orders = locations[locationIndex].Orders;
+                List<Order> orders = _locations[locationIndex].Orders;
 
                 if (orders.Count == 0)
                 {
@@ -231,7 +233,7 @@ namespace Project0.UserInterface
 
             if (locationIndex != -1)
             {
-                List<Product> products = locations[locationIndex].Inventory;
+                List<Product> products = _locations[locationIndex].Inventory;
 
                 if (products.Count == 0)
                 {
@@ -257,7 +259,7 @@ namespace Project0.UserInterface
 
             if (customerIndex != -1 || locationIndex != -1)
             {
-                CreateOrder(locations[locationIndex], customers[customerIndex]);
+                CreateOrder(_locations[locationIndex], _customers[customerIndex]);
             }
         }
 
@@ -271,6 +273,7 @@ namespace Project0.UserInterface
                 Console.Clear();
                 int productIndex = GetValidInventoryIndex(location);
                 string productName = location.Inventory[productIndex].Name;
+                decimal productCostPerUnit = location.Inventory[productIndex].CostPerUnit;
 
                 Console.Write("Enter a quantity to buy: ");
                 string input = Console.ReadLine();
@@ -280,7 +283,7 @@ namespace Project0.UserInterface
                 {   
                     try
                     {
-                        Product newProduct = new Product(productName, quantity);
+                        Product newProduct = new Product(productName, quantity, productCostPerUnit);
                         location.BuyProduct(newProduct);
                         newOrder.AddProduct(newProduct);
                     }
@@ -313,7 +316,7 @@ namespace Project0.UserInterface
             try
             {
                 Customer customer = new Customer(firstName, lastName);
-                customers.Add(customer);
+                _customers.Add(customer);
             }
             catch (ArgumentException ex)
             {
@@ -333,7 +336,7 @@ namespace Project0.UserInterface
             var lastName = Console.ReadLine();
 
             bool found = false;
-            foreach (Customer customer in customers)
+            foreach (Customer customer in _customers)
             {
                 if (customer.FirstName == firstName && customer.LastName == lastName)
                 {

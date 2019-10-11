@@ -34,8 +34,8 @@ namespace Project0.Test
             Customer customer = new Customer("firstName", "lastName");
             Order order = new Order(location, customer);
             List<Product> products = new List<Product>()
-            { new Product("a", 10),
-              new Product("b", 20)
+            { new Product("a", 10, 1.0M),
+              new Product("b", 20, 1.0M)
             };
 
             foreach (Product p in products)
@@ -51,11 +51,11 @@ namespace Project0.Test
             Customer customer = new Customer("firstName", "lastName");
             Order order = new Order(location, customer);
 
-            List<Product> products = new List<Product>() { new Product("a", 30) };
+            List<Product> products = new List<Product>() { new Product("a", 30, 1.0M) };
 
-            order.AddProduct(new Product("a", 10));
-            order.AddProduct(new Product("a", 10));
-            order.AddProduct(new Product("a", 10));
+            order.AddProduct(new Product("a", 10, 1.0M));
+            order.AddProduct(new Product("a", 10, 1.0M));
+            order.AddProduct(new Product("a", 10, 1.0M));
 
             Assert.Equal(products, order.OrderPoducts);
         }

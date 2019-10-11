@@ -14,11 +14,13 @@ namespace Project0.Business
         private Customer _customer; // the customer that placed the order
         private DateTime _timeOfOrder = new DateTime(); // the time that the order was made
         private List<Product> _products = new List<Product>(); // the products perchased in the order
+        private decimal _totalCost;
 
         public Location OrderLocation { get => _location; }
         public Customer OrderCustomer { get => _customer; }
         public DateTime OrderTime { get => _timeOfOrder; }
         public List<Product> OrderPoducts { get => _products; }
+        public decimal TotalCost { get => _totalCost; }
 
         /// <summary>
         /// creates a new order
@@ -31,6 +33,7 @@ namespace Project0.Business
             _location = location;
             _customer = customer;
             _timeOfOrder = DateTime.Now;
+            _totalCost = 0.0M;
         }
 
         /// <summary>
@@ -49,6 +52,8 @@ namespace Project0.Business
             {
                 _products[index].AddQuantity(product.Quantity);
             }
+
+            _totalCost += product.Quantity * product.CostPerUnit;
         }
     }
 }

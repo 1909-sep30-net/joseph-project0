@@ -8,7 +8,7 @@ namespace Project0.Test
     public class LocationTest
     {
 
-        List<Product> products = new List<Product>() { new Product("a", 1), new Product("b", 2) };
+        List<Product> products = new List<Product>() { new Product("a", 1, 1.0M), new Product("b", 2, 2.0M) };
 
 
         [Fact]
@@ -49,8 +49,8 @@ namespace Project0.Test
         public void Buy_Product_To_Large_Quantity_Throws_ArgumentException()
         {
             Location location = new Location("aba");
-            Product product1 = new Product("a", 1);
-            Product product2 = new Product("a", 2);
+            Product product1 = new Product("a", 1, 1.0M);
+            Product product2 = new Product("a", 2, 1.0M);
             location.AddProduct(product1);
             Assert.Throws<ArgumentException>(() => location.BuyProduct(product2));
         }

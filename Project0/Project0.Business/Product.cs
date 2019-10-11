@@ -11,9 +11,11 @@ namespace Project0.Business
     {
         private string _name; // name of the product
         private int _quantity; // the quantity of the product
+        private decimal _costPerUnit;
 
         public string Name { get => _name; }
         public int Quantity { get => _quantity; }
+        public decimal CostPerUnit { get => _costPerUnit; }
 
         /// <summary>
         /// creates a product with the given name and quantity
@@ -21,17 +23,22 @@ namespace Project0.Business
         /// </summary>
         /// <param name="name">name of the product</param>
         /// <param name="quantity">the quantity of the product</param>
-        public Product(string name, int quantity)
+        public Product(string name, int quantity, decimal costPerUnit)
         {
             if (name.Length == 0)
-                throw new ArgumentException("Name must not be empty.", nameof(name));
+                throw new ArgumentException("The name must not be empty.", nameof(name));
 
             _name = name;
 
             if (quantity < 0)
-                throw new ArgumentException("Amount must be grater than 0", nameof(quantity));
+                throw new ArgumentException("The amount must be grater than 0", nameof(quantity));
 
             _quantity = quantity;
+
+            if (costPerUnit < 0)
+                throw new ArgumentException("The cost Per unit must be grater than 0", nameof(costPerUnit));
+
+            _costPerUnit = costPerUnit;
         }
 
         /// <summary>
