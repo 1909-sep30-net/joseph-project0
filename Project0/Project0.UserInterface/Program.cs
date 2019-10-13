@@ -5,11 +5,105 @@ using Project0.Business;
 using Project0.Data;
 using Microsoft.EntityFrameworkCore;
 using Project0.Data.Entities;
+using Serilog;
 
 namespace Project0.UserInterface
 {
     class Program
     {
+        public static int GetValidCustomer(List<Customer> customers)
+        {
+            int index = -1;
+            bool isValid = false;
+            while (!isValid)
+            {
+                Console.Clear();
+                PrintCustomers(customers);
+                Console.Write("Enter a customer Id for the perchase: ");
+
+                int id;
+                if (int.TryParse(Console.ReadLine(), out id))
+                {
+                    index = customers.FindIndex(p => p.Id == id);
+
+                    if (index != -1)
+                    {
+                        isValid = true;
+                    }
+                }
+
+                if (!isValid)
+                {
+                    Console.WriteLine("Customer Id is invalid: Press enter to continue");
+                    Console.ReadLine();
+                }
+            }
+
+            return index;
+        }
+
+        public static int GetValidLocation(List<Location> locations)
+        {
+            int index = -1;
+            bool isValid = false;
+            while (!isValid)
+            {
+                Console.Clear();
+                PrintLocations(locations);
+                Console.Write("Enter a location Id for the perchase: ");
+
+                int id;
+                if (int.TryParse(Console.ReadLine(), out id))
+                {
+                    index = locations.FindIndex(p => p.Id == id);
+
+                    if (index != -1)
+                    {
+                        isValid = true;
+                    }
+                }
+
+                if (!isValid)
+                {
+                    Console.WriteLine("location Id is invalid: Press enter to continue");
+                    Console.ReadLine();
+                }
+            }
+
+            return index;
+        }
+
+        public static int GetValidProduct(Location location)
+        {
+            int index = -1;
+            bool isValid = false;
+            while (!isValid)
+            {
+                Console.Clear();
+                PrintInventory(location);
+                Console.Write("Enter a location Id for the perchase: ");
+
+                int id;
+                if (int.TryParse(Console.ReadLine(), out id))
+                {
+                    index = location.Inventory.FindIndex(p => p.Id == id);
+
+                    if (index != -1)
+                    {
+                        isValid = true;
+                    }
+                }
+
+                if (!isValid)
+                {
+                    Console.WriteLine("Product Id is invalid: Press enter to continue");
+                    Console.ReadLine();
+                }
+            }
+
+            return index;
+        }
+
         public static void PrintCustomers(List<Customer> customers)
         {
             if (customers.Count == 0)
@@ -58,32 +152,142 @@ namespace Project0.UserInterface
 
         public static void PlaceOrder(DataBase data)
         {
-            
+            List<Customer> customers = data.getCustomers().ToList();
+            List<Location> locations = data.getLocations().ToList();
+
+            if (locations.Count == 0)
+            {
+                Console.WriteLine("There are no locations to make a puchase: Press enter to return to the main menu");
+                Console.ReadLine();
+                return;
+            }
+
+            if (customers.Count == 0)
+            {
+                Console.WriteLine("There are no customers to make a puchase: Press enter to return to the main menu");
+                Console.ReadLine();
+                return;
+            }
+
+            Customer customer = customers[GetValidCustomer(customers)];
+            Location location = locations[GetValidLocation(locations)];
+
+            if (location.Inventory.Count == 0)
+            {
+                Console.WriteLine("The location has no products to sell: Press enter to return to the main menu");
+                Console.ReadLine();
+
+                return;
+            }
+
+            Order order = new Order()
+            {
+                Id = 0,
+                LocationId = location.Id,
+                CustomerId = customer.Id,
+            };
+
+            bool orderReady = false;
+            while (!orderReady)
+            {
+                ProductEntery product = location.Inventory[GetValidProduct(location)];
+                Console.WriteLine("Enter the quantity to perchase: ");
+
+                int id;
+                if (int.TryParse(Console.ReadLine(), out id))
+                {
+                    Business.ProductOrder productOrder = new Business.ProductOrder()
+                    {
+                        Name = product.Name,
+                        Id = 0,
+                        OrderId = 0,
+                        ProductId = product.Id,
+                        PricePerUnit = product.PricePerUnit,
+                    };
+
+                    order.AddProduct(productOrder);
+                }
+                else
+                {
+                    Console.WriteLine("Quantity was invalid:");
+                }
+
+                Console.WriteLine("---Current order information---");
+                PrintOrder(order);
+                Console.Write("[y/n] - would you like to add another product to the order: ");
+
+                if (Console.ReadLine() == "n")
+                {
+                    orderReady = true;
+
+                    try
+                    {
+                        location.PlaceOrder(order);
+                        customer.Orders.Add(order);
+
+                        data.UpdateLocation(location);
+                        data.UpdateCustomer(customer);
+                        data.Save();
+
+                        Console.Write("Order placed: Press enter to return to the main menu: ");
+                        Console.ReadLine();
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine($"Error while placing order: {ex.Message}");
+                        Console.Write("Press enter to return to the main menu: ");
+                        Console.ReadLine();
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        Log.Warning("Error in database update {Message}", ex.Message);
+                        Console.WriteLine($"Error in updating database: {ex.Message}");
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        Log.Warning("Error in database update {Message}", ex.Message);
+                        Console.WriteLine($"Error in updating database: {ex.Message}");
+                    }
+                }
+            }
         }
 
         public static void AddCustomer(DataBase data)
         {
-            Customer newCustomer = new Customer();
-
             Console.WriteLine("Enter the first name of the customer: ");
             string firstName = Console.ReadLine();
             Console.WriteLine("Enter the last name of the customer: ");
             string lastName = Console.ReadLine();
 
-            List<Customer> customers = data.getCustomers(firstName: firstName, lastName: lastName);
+            List<Customer> customers = data.getCustomers(firstName: firstName, lastName: lastName).ToList();
 
             if (customers.Count == 0)
             {
                 try
                 {
-                    newCustomer.Id = 0;
-                    newCustomer.FirstName = firstName;
-                    newCustomer.LastName = lastName;
+                    Customer customer = new Customer()
+                    {
+                        Id = 0,
+                        FirstName = firstName,
+                        LastName = lastName,
+                    };
 
-                    Console.WriteLine($"AddCustomer still needs to be implimented");
+                    data.AddCustomer(customer);
+                    data.Save();
                 }
                 catch (ArgumentException ex)
                 {
+                    Log.Warning("Error in database update {Message}", ex.Message);
+                    Console.WriteLine($"Error in creating new customer: {ex.Message}");
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    Log.Warning("Error in database update {Message}", ex.Message);
+                    Console.WriteLine($"Error in creating new customer: {ex.Message}");
+                }
+                catch (DbUpdateException ex)
+                {
+                    Log.Warning("Error in database update {Message}", ex.Message);
                     Console.WriteLine($"Error in creating new customer: {ex.Message}");
                 }
             }
@@ -117,19 +321,19 @@ namespace Project0.UserInterface
                 case "1":
                     Console.Write("Enter first name: ");
                     string firstName = Console.ReadLine();
-                    PrintCustomers(data.getCustomers(firstName: firstName));
+                    PrintCustomers(data.getCustomers(firstName: firstName).ToList());
                     break;
                 case "2":
                     Console.Write("Enter last name: ");
                     string lastName = Console.ReadLine();
-                    PrintCustomers(data.getCustomers(lastName: lastName));
+                    PrintCustomers(data.getCustomers(lastName: lastName).ToList());
                     break;
                 case "3":
                     Console.Write("Enter first name: ");
                     firstName = Console.ReadLine();
                     Console.Write("Enter last name: ");
                     lastName = Console.ReadLine();
-                    PrintCustomers(data.getCustomers(firstName: firstName, lastName: lastName));
+                    PrintCustomers(data.getCustomers(firstName: firstName, lastName: lastName).ToList());
                     break;
                 case "4":
                     Console.Write("Enter the customer id: ");
@@ -138,7 +342,7 @@ namespace Project0.UserInterface
                     int id;
                     if (int.TryParse(stringId, out id))
                     {
-                        PrintCustomers(data.getCustomers(id: id));
+                        PrintCustomers(data.getCustomers(id: id).ToList());
                     }
                     else
                     {
@@ -168,7 +372,7 @@ namespace Project0.UserInterface
             {
                 case "1":
                     Console.Write("Enter a location name: ");
-                    PrintLocations(data.getLocations(name: Console.ReadLine()));
+                    PrintLocations(data.getLocations(name: Console.ReadLine()).ToList());
 
                     break;
                 case "2":
@@ -177,7 +381,7 @@ namespace Project0.UserInterface
                     int id;
                     if (int.TryParse(Console.ReadLine(), out id))
                     {
-                        PrintLocations(data.getLocations(id: id));
+                        PrintLocations(data.getLocations(id: id).ToList());
                     }
                     else
                     {
@@ -199,7 +403,7 @@ namespace Project0.UserInterface
 
         public static void PrintLocationOrders(DataBase data)
         {
-            List<Location> locations = data.getLocations();
+            List<Location> locations = data.getLocations().ToList();
 
             PrintLocations(locations);
             Console.Write("Enter the location Id to see orders: ");
@@ -224,7 +428,7 @@ namespace Project0.UserInterface
 
         public static void PrintCustomerOrders(DataBase data)
         {
-            List<Customer> customers = data.getCustomers();
+            List<Customer> customers = data.getCustomers().ToList();
             PrintCustomers(customers);
 
             Console.WriteLine("Enter a customer Id to see all orders");
@@ -262,10 +466,14 @@ namespace Project0.UserInterface
         //display all order history of a customer
         static void Main(string[] args)
         {
-            string connectionString = SecretString.s;
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File("../../../serilog.txt")
+                .CreateLogger();
+
+            Log.Information("it worked!");
 
             DbContextOptions<Project0Context> options = new DbContextOptionsBuilder<Project0Context>()
-                .UseSqlServer(connectionString).Options;
+                .UseSqlServer(SecretString.s).Options;
 
             using var context = new Project0Context(options);
             using DataBase data = new DataBase(context);

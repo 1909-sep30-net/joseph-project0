@@ -77,6 +77,7 @@ namespace Project0.Business
                 Inventory[index].Quantity -= product.Quantity;
             }
 
+            order.Time = DateTime.Now;
             Orders.Add(order);
         }
 
