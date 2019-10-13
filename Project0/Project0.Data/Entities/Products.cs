@@ -7,15 +7,15 @@ namespace Project0.Data.Entities
     {
         public Products()
         {
-            Inventory = new HashSet<Inventory>();
-            OrderedProducts = new HashSet<OrderedProducts>();
+            ProductEntry = new HashSet<ProductEntry>();
+            ProductOrder = new HashSet<ProductOrder>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
-        public decimal Cost { get; set; }
+        public decimal CostPerUnit { get; set; }
 
-        public virtual ICollection<Inventory> Inventory { get; set; }
-        public virtual ICollection<OrderedProducts> OrderedProducts { get; set; }
+        public virtual ICollection<ProductEntry> ProductEntry { get; set; }
+        public virtual ICollection<ProductOrder> ProductOrder { get; set; }
     }
 }

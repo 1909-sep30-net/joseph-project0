@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Project0.Business
 {
@@ -9,36 +9,56 @@ namespace Project0.Business
     /// </summary>
     public class Customer
     {
+        private int _id; // customers ID
         private string _firstName; // customers first name
         private string _lastName; // custumers last name
-        private List<Order> _orders = new List<Order>(); // orders made by this customer
 
-        public string FirstName { get => _firstName; }
-        public string LastName { get => _lastName; }
-        public List<Order> Orders { get => _orders; }
-
-        public void AddOrder(Order order)
+        public int Id
         {
-            _orders.Add(order);
+            get => _id;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentException("ID cannot be < 0", nameof(value));
+
+                _id = value;
+            }
         }
-
-        /// <summary>
-        /// each customer object must contain a non empty first and last name.
-        /// throws an ArgumentExcetion if either is an emtpy string.
-        /// </summary>
-        /// <param name="firstName">customers first name</param>
-        /// <param name="lastName">customers last name</param>
-        public Customer(string firstName, string lastName)
+        public string FirstName
         {
-            if (firstName.Length == 0)
-                throw new ArgumentException("First name cannot be empty.", nameof(firstName));
+            get => _firstName;
+            set
+            {
+                if (value == string.Empty)
+                    throw new ArgumentException("First name cannot be empty", nameof(value));
 
-            _firstName = firstName;
+                _firstName = value;
+            }
+        }
+        public string LastName
+        {
+            get => _lastName;
+            set
+            {
+                if (value == string.Empty)
+                    throw new ArgumentException("Last name cannot be empty", nameof(value));
 
-            if (lastName.Length == 0)
-                throw new ArgumentException("Last name cannot be empty.", nameof(lastName));
+                _lastName = value;
+            }
+        }
+        public List<Order> Orders { get; set; } = new List<Order>();
 
-            _lastName = lastName;
+        public decimal TotalPurchases
+        {
+            get
+            {
+                if (Orders?.Count > 0)
+                {
+                    return Orders.Sum(p => p.TotalPrice);
+                }
+
+                return 0.00M;
+            }
         }
     }
 }

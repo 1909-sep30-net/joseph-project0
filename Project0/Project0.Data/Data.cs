@@ -1,40 +1,89 @@
-﻿using System;
+﻿
+using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Text;
-using Project0.Business;
-
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Project0.Data.Entities;
+using Project0.Business;
 
 namespace Project0.Data
 {
-    public class Data
+    public class DataBase : IDisposable
     {
-        DB
-        public Data()
-        {
+        private readonly Project0Context _context;
 
-        }
-        public List<Customer> getCustomers()
+        public DataBase(Project0Context context)
         {
-
-            return null;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public List<Location> getLocations()
+        public void Save()
         {
-            return null;
+            _context.SaveChanges();
         }
 
-        public List<Order> getOrders(Customer customer)
+        public void AddCustomer(Customer customer)
         {
-            return null;
+            Customers entity = Mapper.MapCustomerToOrders(customer);
+            _context.Add(entity);
         }
 
-        public List<Order> getOrders(Location location)
+        public void AddLocation(Location location)
         {
-            return null;
+            Locations entity = Mapper.MapLocationsToInvetoryToOrders(location);
+            _context.Add(entity);
         }
 
+        public List<Customer> getCustomers(string firstName = null, string lastName = null, int? id = null)
+        {
+            IQueryable<Customers> items = _context.Customers
+                .Include(r => r.Orders).AsNoTracking();
+
+            if (firstName != null)
+                items = items.Where(c => c.FirstName == firstName);
+            if (lastName != null)
+                items = items.Where(c => c.LastName == lastName);
+            if (id != null)
+                items = items.Where(c => c.Id == id);
+
+            return items.Select(Mapper.MapCustomerToOrders).ToList();
+        }
+
+        public List<Location> getLocations(string name = null, int? id = null)
+        {
+            IQueryable<Locations> items = _context.Locations
+                .Include(r => r.ProductEntry).Include(r => r.Orders).AsNoTracking();
+
+            if (name != null)
+                items = items.Where(n => n.Name == name);
+            if (id != null)
+                items = items.Where(i => i.Id == id);
+
+            return items.Select(Mapper.MapLocationsToInvetoryToOrders).ToList();
+        }
+
+        public
+        #region IDisposable Support
+        private bool _disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+
+                _disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }

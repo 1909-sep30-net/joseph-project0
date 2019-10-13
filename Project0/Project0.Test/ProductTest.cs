@@ -7,70 +7,36 @@ namespace Project0.Test
 {
     public class ProductTest
     {
+        readonly Product product = new Product();
+
         [Fact]
-        public void Costructor_Empty_Name_Throws_ArgumentException()
+        public void Name_Empty_Throws_ArgumentException()
         {
-            Assert.ThrowsAny<ArgumentException>(() => new Product(string.Empty, 1, 1.0M));
+            Assert.ThrowsAny<ArgumentException>(() => product.Name = string.Empty);
         }
 
         [Fact]
-        public void Costructor_Quantity_Out_Of_Range_Throws_ArgumentException()
+        public void Name_Returns_Correctly()
         {
-            Assert.ThrowsAny<ArgumentException>(() => new Product("a", -1, 1.0M));
-        }
-
-        [Fact]
-        public void Name_Property_Returns_Correctly()
-        {
-            string name = "a";
-            int quantity = 1;
-            decimal cost = 1.0M;
-            Product product = new Product(name, quantity, cost);
+            string name = "name";
+            product.Name = name;
 
             Assert.Equal(name, product.Name);
         }
 
+        [Fact]
+        public void CostPerUnit_Less_Than_0_Throws_ArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => product.CostPerUnit = -1M);
+        }
 
         [Fact]
-        public void Quantity_Property_Returns_Correctly()
+        public void CostPerUnit_Returns_Correctly()
         {
-            string name = "a";
-            int quantity = 1;
-            decimal cost = 1.0M;
-            Product product = new Product(name, quantity, cost);
+            decimal cost = 1M;
+            product.CostPerUnit = cost;
 
-            Assert.Equal(quantity, product.Quantity);
-        }
-
-        [Theory]
-        [InlineData(-1)]
-        public void AddQuantity_Quantity_Out_Of_range_Throws_ArgumentException(int a)
-        {
-            Product product = new Product("a", 1, 1.0M);
-
-            Assert.ThrowsAny<ArgumentException>(() => product.AddQuantity(a));
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        [InlineData(5, 10)]
-        public void AddQuantity_Adds_Correctly(int a, int b)
-        {
-            Product product = new Product("a", a, 1.0M);
-            product.AddQuantity(a);
-
-            Assert.Equal(b, product.Quantity);
-        }
-
-        [Theory]
-        [InlineData(1, 0)]
-        [InlineData(5, 0)]
-        public void BuyQuantity_Subtracts_Correctly(int a, int b)
-        {
-            Product product = new Product("a", a, 1.0M);
-            product.BuyQuantity(a);
-
-            Assert.Equal(b, product.Quantity);
+            Assert.Equal(cost, product.CostPerUnit);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Project0.Data.Entities
     {
         public Orders()
         {
-            OrderedProducts = new HashSet<OrderedProducts>();
+            ProductOrder = new HashSet<ProductOrder>();
         }
 
         public int Id { get; set; }
@@ -18,6 +18,6 @@ namespace Project0.Data.Entities
 
         public virtual Customers Customer { get; set; }
         public virtual Locations Location { get; set; }
-        public virtual ICollection<OrderedProducts> OrderedProducts { get; set; }
+        public virtual ICollection<ProductOrder> ProductOrder { get; set; }
     }
 }

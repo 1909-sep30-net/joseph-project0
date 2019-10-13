@@ -7,57 +7,63 @@ namespace Project0.Test
 {
     public class OrderTest
     {
-        [Fact]
-        public void OrderLocation_Returns_Correctly()
+        private readonly List<ProductEntery> inventory = new List<ProductEntery>()
         {
-            Location location = new Location("location");
-            Customer customer = new Customer("firstName", "lastName");
-            Order order = new Order(location, customer);
+            new ProductEntery()
+            {
+                Id = 1,
+                LocationId = 1,
+                ProductId = 1,
+                Quantity = 1,
+                PricePerUnit = 1,
+            }
+        };
 
-            Assert.Equal(location, order.OrderLocation);
+        private readonly Order order = new Order();
+
+        [Fact]
+        public void Id_Less_Than_0_Throws_ArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => order.Id = -1);
         }
 
         [Fact]
-        public void OrderCustomer_Returns_Correctly()
+        public void Id_Returns_Correctly()
         {
-            Location location = new Location("location");
-            Customer customer = new Customer("firstName", "lastName");
-            Order order = new Order(location, customer);
+            int id = 1;
+            order.Id = id;
 
-            Assert.Equal(customer, order.OrderCustomer);
+            Assert.Equal(id, order.Id);
         }
 
         [Fact]
-        public void AddProduct_Returns_Correctly()
+        public void LocationId_Less_Than_0_Throws_ArgumentException()
         {
-            Location location = new Location("location");
-            Customer customer = new Customer("firstName", "lastName");
-            Order order = new Order(location, customer);
-            List<Product> products = new List<Product>()
-            { new Product("a", 10, 1.0M),
-              new Product("b", 20, 1.0M)
-            };
-
-            foreach (Product p in products)
-                order.AddProduct(p);
-
-            Assert.Equal(products, order.OrderPoducts);
+            Assert.Throws<ArgumentException>(() => order.LocationId = -1);
         }
 
         [Fact]
-        public void AddProduct_Properly_Adds_To_Products_Correctly()
+        public void LocationId_Returns_Correctly()
         {
-            Location location = new Location("location");
-            Customer customer = new Customer("firstName", "lastName");
-            Order order = new Order(location, customer);
+            int id = 1;
+            order.LocationId = id;
 
-            List<Product> products = new List<Product>() { new Product("a", 30, 1.0M) };
+            Assert.Equal(id, order.LocationId);
+        }
 
-            order.AddProduct(new Product("a", 10, 1.0M));
-            order.AddProduct(new Product("a", 10, 1.0M));
-            order.AddProduct(new Product("a", 10, 1.0M));
+        [Fact]
+        public void CustomerId_Less_Than_0_Throws_ArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => order.CustomerId = -1);
+        }
 
-            Assert.Equal(products, order.OrderPoducts);
+        [Fact]
+        public void CustomerId_Returns_Correctly()
+        {
+            int id = 1;
+            order.CustomerId = id;
+
+            Assert.Equal(id, order.CustomerId);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Collections.Generic;
 
 namespace Project0.Business
 {
@@ -10,66 +9,88 @@ namespace Project0.Business
     /// </summary>
     public class Location
     {
+        private int _id; // locations ID
         private string _name; // locations name
-        private List<Product> _inventory = new List<Product>(); // locations list of produts to sell
-        private List<Order> _orders = new List<Order>(); // orders bought from this location
 
-        public string LocationName { get => _name; }
-        public List<Product> Inventory { get => _inventory; }
-        public List<Order> Orders { get => _orders; }
-
-        public void AddOrder(Order order)
+        public int Id
         {
-            _orders.Add(order);
-        }
-        /// <summary>
-        /// Location must hoave a valid name
-        /// Trows ArumentException if name is empty
-        /// </summary>
-        /// <param name="name">locations name must not be empty</param>
-        public Location(string name)
-        {
-            if (name.Length == 0)
+            get => _id;
+            set
             {
-                throw new ArgumentException("Name must not be empty.", nameof(name));
+                if (value < 0)
+                    throw new ArgumentException("ID cannot be < 0", nameof(value));
+
+                _id = value;
+            }
+        }
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                if (value == string.Empty)
+                    throw new ArgumentException("Name cannot be empty.", nameof(value));
+
+                _name = value;
+            }
+        }
+        public List<ProductEntery> Inventory { get; set; } = new List<ProductEntery>();
+
+        public List<Order> Orders { get; set; } = new List<Order>();
+
+        public decimal Total
+        {
+            get
+            {
+                if (Orders?.Count > 0)
+                {
+                    return Orders.Sum(p => p.TotalPrice);
+                }
+
+                return 0.00M;
+            }
+        }
+
+        public void ValidateOrder(Order order)
+        {
+            foreach (ProductOrder product in order.ProductOrders)
+            {
+                int index = Inventory.IndexOf(Inventory.Where(p => p.ProductId == product.ProductId).FirstOrDefault());
+
+                if (index < 0)
+                    throw new ArgumentException("Inventory does not have product", nameof(product));
+
+                if (Inventory[index].Quantity < product.Quantity)
+                    throw new ArgumentException("Inventory does not have enough of product", nameof(product));
+            }
+        }
+
+        public void PlaceOrder (Order order)
+        {
+            ValidateOrder(order);
+
+            foreach (ProductOrder product in order.ProductOrders)
+            {
+                int index = Inventory.IndexOf(Inventory.Where(p => p.ProductId == product.ProductId).FirstOrDefault());
+
+                Inventory[index].Quantity -= product.Quantity;
             }
 
-            _name = name;
+            Orders.Add(order);
         }
 
-        /// <summary>
-        /// Adds a new product to the locations inventory
-        /// </summary>
-        /// <param name="product">the product to add to locations inventory</param>
-        public void AddProduct(Product product)
+        public void AddProduct(ProductEntery product)
         {
-            if (_inventory.Contains(product))
+            if (Inventory.Contains(product))
             {
-                int index = _inventory.IndexOf(product);
-                _inventory[index].AddQuantity(product.Quantity);
+                int index = Inventory.IndexOf(product);
+                Inventory[index].Quantity += product.Quantity;
             }
             else
             {
-                _inventory.Add(product);
+                Inventory.Add(product);
             }
-        }
-
-        /// <summary>
-        /// process a product to be perchased
-        /// throws ArgumentException for products not in the current locations invintory
-        /// or quantities larger than the inventories product quantity
-        /// </summary>
-        /// <param name="product">the product to buy from this location</param>
-        public void BuyProduct(Product product)
-        {
-            int index = _inventory.FindIndex(item => item.Name == product.Name);
-            if (index < 0)
-                throw new ArgumentException("Product does not exsits in inventory", nameof(product));
-
-            if (_inventory[index].Quantity < product.Quantity)
-                throw new ArgumentException("Product quantity is greater than in inventory", nameof(product));
-
-            _inventory[index].BuyQuantity(product.Quantity);
         }
     }
 }

@@ -7,52 +7,108 @@ namespace Project0.Test
 {
     public class LocationTest
     {
+        private readonly Location location = new Location();
+        private readonly List<ProductEntery> inventory = new List<ProductEntery>()
+        {
+            new ProductEntery()
+            {
+                Id = 1,
+                LocationId = 1,
+                ProductId = 1,
+                Quantity = 1,
+                PricePerUnit = 1,
+            }
+        };
 
-        List<Product> products = new List<Product>() { new Product("a", 1, 1.0M), new Product("b", 2, 2.0M) };
+        private readonly List<Order> orders = new List<Order>
+        {
+            new Order()
+            {
+                Id = 1,
+                LocationId = 1,
+                CustomerId = 1,
+                Time = DateTime.Now,
+                ProductOrders = new List<ProductOrder>()
+                {
+                    new ProductOrder()
+                    {
+                        Name = "p1",
+                        Id = 1,
+                        OrderId = 1,
+                        ProductId = 1,
+                        Quantity = 1,
+                        PricePerUnit = 1,
+                    }
+                }
+            }
+        };
 
 
         [Fact]
-        public void Constructor_Empty_Nmae_Throws_ArgumentException()
+        public void Id_Less_Than_0_Throws_ArgumentException()
         {
-            Assert.ThrowsAny<ArgumentException>(() => new Location(string.Empty));
+            Assert.Throws<ArgumentException>(() => location.Id = -1);
         }
 
         [Fact]
-        public void LocationName_Property_Returns_Correctly()
+        public void Id_Returns_Correctly()
         {
-            string locationName = "store name";
-            Location location = new Location(locationName);
+            int id = 1;
+            location.Id = id;
 
-            Assert.Equal(locationName, location.LocationName);
+            Assert.Equal(id, location.Id);
+        }
+
+        [Fact]
+        public void Name_Empty_Throws_ArgumentException()
+        {
+            Assert.ThrowsAny<ArgumentException>(() => location.Name = string.Empty);
+        }
+
+        [Fact]
+        public void LocationName_Returns_Correctly()
+        {
+            string name = "store name";
+            location.Name = name;
+
+            Assert.Equal(name, location.Name);
         }
 
         [Fact]
         public void Invintory_Property_Returns_Added_Products_Correctly()
         {
-            Location location = new Location("Joseph");
-            foreach (Product p in products)
-                location.AddProduct(p);
+            location.Inventory = inventory;
 
-            Assert.Equal(products, location.Inventory);
+            Assert.Equal(inventory, location.Inventory);
         }
 
         [Fact]
-        public void Buy_Product_Does_Not_Contain_Product_Throws_ArgumentException()
+        public void ValidateOrder_Invalid_Order_Throws_ArgumentException()
         {
-            Location location = new Location("aba");
-
-            Assert.Throws<ArgumentException>(() => location.BuyProduct(products[0]));
+            Assert.Throws<ArgumentException>(() => location.ValidateOrder(orders[0]));
         }
 
+        [Fact]
+        public void ValidateOrder_Valid_Order_returns_Correctly()
+        {
+            location.Orders = orders;
+            Assert.Throws<ArgumentException>(() => location.ValidateOrder(orders[0]));
+        }
 
         [Fact]
-        public void Buy_Product_To_Large_Quantity_Throws_ArgumentException()
+        public void PlaceOrder_Invalid_Order_Throws_ArgumentException()
         {
-            Location location = new Location("aba");
-            Product product1 = new Product("a", 1, 1.0M);
-            Product product2 = new Product("a", 2, 1.0M);
-            location.AddProduct(product1);
-            Assert.Throws<ArgumentException>(() => location.BuyProduct(product2));
+
+            Assert.Throws<ArgumentException>(() => location.PlaceOrder(orders[0]));
+        }
+
+        [Fact]
+        public void PlaceOrder_Valid_Order_Places_Order()
+        {
+            location.AddProduct(inventory[0]);
+            location.PlaceOrder(orders[0]);
+
+            Assert.Equal(orders, location.Orders);
         }
     }
 }

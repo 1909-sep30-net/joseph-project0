@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Collections.Generic;
 
 namespace Project0.Business
 {
@@ -10,50 +9,74 @@ namespace Project0.Business
     /// </summary>
     public class Order
     {
-        private Location _location; // location the order was placed at
-        private Customer _customer; // the customer that placed the order
-        private DateTime _timeOfOrder = new DateTime(); // the time that the order was made
-        private List<Product> _products = new List<Product>(); // the products perchased in the order
-        private decimal _totalCost;
-
-        public Location OrderLocation { get => _location; }
-        public Customer OrderCustomer { get => _customer; }
-        public DateTime OrderTime { get => _timeOfOrder; }
-        public List<Product> OrderPoducts { get => _products; }
-        public decimal TotalCost { get => _totalCost; }
-
-        /// <summary>
-        /// creates a new order
-        /// automaticly sets the time of order at creation
-        /// </summary>
-        /// <param name="location">the location the order was placed at</param>
-        /// <param name="customer">the customer that perchased the ordert</param>
-        public Order(Location location, Customer customer)
+        private int _id; // order ID
+        private int _locationId;
+        private int _customerId;
+        
+        public int Id
         {
-            _location = location;
-            _customer = customer;
-            _timeOfOrder = DateTime.Now;
-            _totalCost = 0.0M;
+            get => _id;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentException("ID cannot be < 0", nameof(value));
+
+                _id = value;
+            }
         }
 
-        /// <summary>
-        /// adds a product to the order
-        /// if the product is allready in the order it adds the quantitys together
-        /// </summary>
-        /// <param name="product">product to add to the order</param>
-        public void AddProduct(Product product)
+        public int LocationId
         {
-            int index = _products.FindIndex(item => item.Name == product.Name);
+            get => _locationId;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentException("ID cannot be < 0", nameof(value));
+
+                _locationId = value;
+            }
+        }
+
+        public int CustomerId
+        {
+            get => _customerId;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentException("ID cannot be < 0", nameof(value));
+
+                _customerId = value;
+            }
+        }
+
+        public DateTime Time { get; set; }
+
+        public List<ProductOrder> ProductOrders { get; set; } = new List<ProductOrder>();
+
+        public decimal TotalPrice
+        {
+            get
+            {
+                if (ProductOrders?.Count > 0)
+                {
+                    return ProductOrders.Sum(p => p.PricePerUnit);
+                }
+
+                return 0.00M;
+            }
+        }
+
+        public void AddProduct(ProductOrder product)
+        {
+            int index = ProductOrders.IndexOf(product);
             if (index < 0)
             {
-                _products.Add(product);
+                ProductOrders.Add(product);
             }
             else
             {
-                _products[index].AddQuantity(product.Quantity);
+                ProductOrders[index].Quantity += product.Quantity;
             }
-
-            _totalCost += product.Quantity * product.CostPerUnit;
         }
     }
 }

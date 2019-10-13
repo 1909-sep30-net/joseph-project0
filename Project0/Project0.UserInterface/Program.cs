@@ -1,379 +1,274 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Project0.Data.Entities
 using Project0.Business;
 using Project0.Data;
+using Microsoft.EntityFrameworkCore;
+using Project0.Data.Entities;
 
 namespace Project0.UserInterface
 {
-
     class Program
     {
-        public static List<Location> _locations = new List<Location>()
+        public static void PrintCustomers(List<Customer> customers)
         {
-            new Location("store a"),
-            new Location("store b"),
-            new Location("store c")
-        };
+            if (customers.Count == 0)
+            {
+                Console.WriteLine("There are no customers");
+            }
+            else
+            {
+                foreach (Customer c in customers)
+                    Console.WriteLine($"Id = {c.Id} - Name = {c.FirstName} {c.LastName}");
+            }
 
-        public static List<Customer> _customers = new List<Customer>()
-        {
-            new Customer("customer", "a"),
-            new Customer("customer", "b"),
-            new Customer("customer", "c")
-        };
-
-        public static List<Product> _products = new List<Product>()
-        {
-            new Product("product a", 10, 1.0M),
-            new Product("product b", 10, 2.0M),
-            new Product("product c", 10, 3.0M),
-        };
-
-        public static void Init()
-        {
-            foreach (Location l in _locations)
-                foreach (Product p in _products)
-                    l.AddProduct(new Product(p.Name, p.Quantity, p.CostPerUnit));
+            Console.WriteLine("Press enter to continue");
+            Console.ReadLine();
         }
 
-        public static void PrintCustomers()
+        public static void PrintLocations(List<Location> locations)
         {
-            for (int i = 0; i < _customers.Count; i++)
+            if (locations.Count == 0)
             {
-                Console.WriteLine($"[{i}] - {_customers[i].FirstName} {_customers[i].LastName}");
+                Console.WriteLine("There are no locations");
             }
-        }
+            else
+            {
+                foreach (Location l in locations)
+                    Console.WriteLine($"Id = {l.Id} - Name = {l.Name}");
+            }
 
-        public static void PrintLocations()
-        {
-            for (int i = 0; i < _locations.Count; i++)
-            {
-                Console.WriteLine($"[{i}] - {_locations[i].LocationName}");
-            }
+            Console.WriteLine("Press enter to continue");
+            Console.ReadLine();
         }
 
         public static void PrintInventory(Location location)
         {
-            List<Product> inventory = location.Inventory;
-
-            for (int i = 0; i < inventory.Count; i++)
-            {
-                Console.WriteLine($"[{i}] - {inventory[i].Name} = {inventory[i].Quantity}");
-            }
+            foreach (ProductEntery p in location.Inventory)
+                Console.WriteLine($"Id = {p.ProductId} - Name = {p.Name} - Quantity = {p.Quantity}");
         }
 
         public static void PrintOrder(Order order)
         {
-            List<Product> products = order.OrderPoducts;
-            string location = order.OrderLocation.LocationName;
-            string customer = order.OrderCustomer.FirstName + " " + order.OrderCustomer.LastName;
-            Console.WriteLine($"Location = [{location}] Customer = [{customer}]");
-            Console.Write("Products = ");
+            Console.WriteLine($"Order Id = {order.Id} - Location Id = {order.LocationId} - Customer Id = {order.CustomerId} - Total = {order.TotalPrice}");
 
-            foreach (Product product in products)
-                Console.Write($"[{product.Name} = {product.Quantity}] ");
-
-            Console.WriteLine($"] Cost = [{order.TotalCost}]");
-
-
+            foreach (Business.ProductOrder p in order.ProductOrders)
+                Console.WriteLine($"{p.Id} - {p.Name} = {p.Quantity}");
         }
 
-        public static int GetValidCustomerIndex()
+        public static void PlaceOrder(DataBase data)
         {
-            int customerIndex = -1;
-
-            if (_customers.Count == 0)
-            {
-                Console.WriteLine("There are no customers: Press enter to continue");
-                Console.ReadLine();
-                return customerIndex;
-            }
-
-            while (customerIndex < 0 || customerIndex >= _customers.Count)
-            {
-                Console.Clear();
-                PrintCustomers();
-
-                Console.Write("Select a customer: ");
-                string input = Console.ReadLine();
-
-                if (!int.TryParse(input, out customerIndex))
-                {
-                    Console.WriteLine("Invalid input: Press enter to continue");
-                    Console.ReadLine();
-                }
-            }
-
-            return customerIndex;
-        }
-
-        public static int GetValidLocationIndex()
-        {
-            int locationIndex = -1;
-
-            if (_locations.Count == 0)
-            {
-                Console.WriteLine("There are no locations: Press enter to continue");
-                Console.ReadLine();
-                return locationIndex;
-            }
-
-            bool validIndex = false;
-            while (!validIndex)
-            {
-                Console.Clear();
-                PrintLocations();
-
-                Console.Write("Select a location: ");
-                string input = Console.ReadLine();
-
-                if (int.TryParse(input, out locationIndex) && (locationIndex >= 0 && locationIndex < _locations.Count))
-                {
-                    validIndex = true;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid input: Press enter to continue");
-                    Console.ReadLine();
-                }
-            }
-
-            return locationIndex;
-        }
-
-        public static int GetValidInventoryIndex(Location location)
-        {
-            int productIndex = -1;
-
-            if (location.Inventory.Count == 0)
-            {
-                Console.WriteLine("This location has no products to sell: Press enter to continue");
-                Console.ReadLine();
-                return productIndex;
-            }
-
-            bool isValid = false;
-            while (!isValid)
-            {
-                Console.Clear();
-                PrintInventory(location);
-
-                Console.WriteLine("Pick a product to buy: ");
-                string input = Console.ReadLine();
-
-                if (int.TryParse(input, out productIndex) && (productIndex >= 0 && productIndex < location.Inventory.Count))
-                {
-                    isValid = true;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid input: Press enter to continue");
-                    Console.ReadLine();
-                }
-
-            }
-
-            return productIndex;
-        }
-
-        public static void PrintCustomerOrders()
-        {
-            int customerIndex = GetValidCustomerIndex();
-
-            if (customerIndex != -1)
-            {
-                List<Order> orders = _customers[customerIndex].Orders;
-
-                Console.Clear();
-                if (orders.Count != 0)
-                {
-                    foreach (Order order in orders)
-                        PrintOrder(order);
-
-                    Console.WriteLine("Press enter to continue");
-                    Console.ReadLine();
-                }
-                else
-                {
-                    Console.WriteLine("There are no orders for this customer: Press enter to continue");
-                    Console.ReadLine();
-                }
-            }
-        }
-
-        public static void PrintLocationOrders()
-        {
-            int locationIndex = GetValidLocationIndex();
-            if (locationIndex != -1)
-            {
-                List<Order> orders = _locations[locationIndex].Orders;
-
-                if (orders.Count == 0)
-                {
-                    Console.WriteLine("There are no orders for this location: Press enter to continue");
-                    Console.ReadLine();
-                }
-                else
-                {
-                    foreach (Order order in orders)
-                    {
-                        PrintOrder(order);
-                    }
-
-                    Console.WriteLine("Press enter to continue");
-                    Console.ReadLine();
-                }
-            }
-        }
-
-        public static void PrintLocationInvintory()
-        {
-            int locationIndex = GetValidLocationIndex();
-
-            if (locationIndex != -1)
-            {
-                List<Product> products = _locations[locationIndex].Inventory;
-
-                if (products.Count == 0)
-                {
-                    Console.WriteLine("This location does not have any orders: Press enter to continue");
-                    Console.ReadLine();
-                }
-                else
-                {
-                    foreach (Product product in products)
-                        Console.WriteLine(product);
-                }
-            }
-        }
-
-        public static void PlaceAnOrder()
-        {
-
-            int customerIndex = GetValidCustomerIndex();
-            int locationIndex = -1;
             
-            if (customerIndex != -1)
-                locationIndex = GetValidLocationIndex();
-
-            if (customerIndex != -1 || locationIndex != -1)
-            {
-                CreateOrder(_locations[locationIndex], _customers[customerIndex]);
-            }
         }
 
-        public static void CreateOrder(Location location, Customer customer)
+        public static void AddCustomer(DataBase data)
         {
-            bool orderReady = false;
-            Order newOrder = new Order(location, customer);
+            Customer newCustomer = new Customer();
 
-            while (!orderReady)
+            Console.WriteLine("Enter the first name of the customer: ");
+            string firstName = Console.ReadLine();
+            Console.WriteLine("Enter the last name of the customer: ");
+            string lastName = Console.ReadLine();
+
+            List<Customer> customers = data.getCustomers(firstName: firstName, lastName: lastName);
+
+            if (customers.Count == 0)
             {
-                Console.Clear();
-                int productIndex = GetValidInventoryIndex(location);
-                string productName = location.Inventory[productIndex].Name;
-                decimal productCostPerUnit = location.Inventory[productIndex].CostPerUnit;
+                try
+                {
+                    newCustomer.Id = 0;
+                    newCustomer.FirstName = firstName;
+                    newCustomer.LastName = lastName;
 
-                Console.Write("Enter a quantity to buy: ");
-                string input = Console.ReadLine();
+                    Console.WriteLine($"AddCustomer still needs to be implimented");
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine($"Error in creating new customer: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Customer allready exist");
+            }
 
-                int quantity;
-                if (int.TryParse(input, out quantity))
-                {   
-                    try
+            Console.Write("Press enter to continue: ");
+            Console.ReadLine();
+        }
+
+        public static void AddLocation(DataBase data)
+        {
+            Console.WriteLine("AddLocation not implimented");
+        }
+
+        public static void FindCustomer(DataBase data)
+        {
+            Console.Clear();
+            Console.WriteLine("[1] - get all customers with first name");
+            Console.WriteLine("[2] - get all customers with last name");
+            Console.WriteLine("[3] - get customers by full name");
+            Console.WriteLine("[4] - get customers by Id");
+            Console.WriteLine("[5] - return to main menu");
+            Console.Write("Enter an option from the list: ");
+            var input = Console.ReadLine();
+
+            switch (input)
+            {
+                case "1":
+                    Console.Write("Enter first name: ");
+                    string firstName = Console.ReadLine();
+                    PrintCustomers(data.getCustomers(firstName: firstName));
+                    break;
+                case "2":
+                    Console.Write("Enter last name: ");
+                    string lastName = Console.ReadLine();
+                    PrintCustomers(data.getCustomers(lastName: lastName));
+                    break;
+                case "3":
+                    Console.Write("Enter first name: ");
+                    firstName = Console.ReadLine();
+                    Console.Write("Enter last name: ");
+                    lastName = Console.ReadLine();
+                    PrintCustomers(data.getCustomers(firstName: firstName, lastName: lastName));
+                    break;
+                case "4":
+                    Console.Write("Enter the customer id: ");
+                    string stringId = Console.ReadLine();
+
+                    int id;
+                    if (int.TryParse(stringId, out id))
                     {
-                        Product newProduct = new Product(productName, quantity, productCostPerUnit);
-                        location.BuyProduct(newProduct);
-                        newOrder.AddProduct(newProduct);
+                        PrintCustomers(data.getCustomers(id: id));
                     }
-                    catch (ArgumentException ex)
+                    else
                     {
-                        Console.WriteLine($"Error in making purchase: {ex.Message}");
-                        Console.WriteLine("Press enter to continue: ");
+                        Console.WriteLine("Id entered was invalid: Press enter to continue");
                         Console.ReadLine();
                     }
-                }
-
-                Console.WriteLine("[y] - Add another product to the order? ");
-                if (Console.ReadLine() != "y")
-                {
-                    location.AddOrder(newOrder);
-                    customer.AddOrder(newOrder);
-                    orderReady = true;
-                }
-            }
-        }
-
-        public static void AddCustomer()
-        {
-            Console.Write("Please enter a first name: ");
-            var firstName = Console.ReadLine();
-
-            Console.Write("Please enter a last name: ");
-            var lastName = Console.ReadLine();
-
-            try
-            {
-                Customer customer = new Customer(firstName, lastName);
-                _customers.Add(customer);
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine($"Error in creating new customer: {ex.Message}");
-                Console.WriteLine("Press enter to continue");
-                Console.ReadLine();
-            }
-
-        }
-
-        public static void FindCustomer()
-        {
-            Console.Write("Please enter the customers first name: ");
-            var firstName = Console.ReadLine();
-
-            Console.Write("Please enter the customers last name: ");
-            var lastName = Console.ReadLine();
-
-            bool found = false;
-            foreach (Customer customer in _customers)
-            {
-                if (customer.FirstName == firstName && customer.LastName == lastName)
-                {
-                    found = true;
-
-                    Console.WriteLine("Customer found");
-                    Console.WriteLine(customer.FirstName + " " + customer.LastName);
-                    Console.WriteLine($"Customer has made {customer.Orders.Count} oders so far");
-                    Console.WriteLine("Press enter to continue");
+                    break;
+                case "5":
+                    return;
+                default:
+                    Console.WriteLine("The option entered was invalid: Press enter to continue");
                     Console.ReadLine();
-                }
+                    break;
+            }
+        }
+
+        public static void FindLocation(DataBase data)
+        {
+            Console.Clear();
+            Console.WriteLine("[1] - get location by name");
+            Console.WriteLine("[2] - get location by Id");
+            Console.WriteLine("[3] - return to main menu");
+            Console.Write("Enter an option from the list: ");
+            var input = Console.ReadLine();
+
+            switch (input)
+            {
+                case "1":
+                    Console.Write("Enter a location name: ");
+                    PrintLocations(data.getLocations(name: Console.ReadLine()));
+
+                    break;
+                case "2":
+                    Console.Write("Enter a location Id: ");
+
+                    int id;
+                    if (int.TryParse(Console.ReadLine(), out id))
+                    {
+                        PrintLocations(data.getLocations(id: id));
+                    }
+                    else
+                    {
+                        Console.WriteLine($"The Id is invalid");
+                    }
+
+                    break;
+                case "3":
+                    return;
+                default:
+                    Console.WriteLine("The option entered was invalid: Press enter to continue");
+
+                    break;
             }
 
-            if (!found)
+            Console.WriteLine("Press enter to continue: ");
+            Console.ReadLine();
+        }
+
+        public static void PrintLocationOrders(DataBase data)
+        {
+            List<Location> locations = data.getLocations();
+
+            PrintLocations(locations);
+            Console.Write("Enter the location Id to see orders: ");
+
+            int id;
+            if (int.TryParse(Console.ReadLine(), out id))
             {
-                Console.WriteLine("Customer not found");
-                Console.WriteLine("Press enter to continue");
+                int index = locations.FindIndex(i => i.Id == id);
+                if (index != -1)
+                {
+                    foreach (Order o in locations[index].Orders)
+                        PrintOrder(o);
+                }
+                else
+                {
+                    Console.WriteLine($"No locations with Id = {id} exist");
+                }
+                Console.Write("Press enter to continue: ");
                 Console.ReadLine();
             }
         }
 
-//        place orders to store locations for customers
-//add a new customer
-//search customers by name
-//display details of an order
-//display all order history of a store location
-//display all order history of a customer
+        public static void PrintCustomerOrders(DataBase data)
+        {
+            List<Customer> customers = data.getCustomers();
+            PrintCustomers(customers);
+
+            Console.WriteLine("Enter a customer Id to see all orders");
+
+            int id;
+            if (int.TryParse(Console.ReadLine(), out id))
+            {
+                int index = customers.FindIndex(i => i.Id == id);
+
+                if (index != -1)
+                {
+                    foreach (Order o in customers[index].Orders)
+                        PrintOrder(o);
+
+                }
+                else
+                {
+                    Console.WriteLine($"There are no customers with the Id {id}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("The entered Id was invalid");
+            }
+
+            Console.Write("Press enter to continue: ");
+            Console.ReadLine();
+        }
+
+        //        place orders to store locations for customers
+        //add a new customer
+        //search customers by name
+        //display details of an order
+        //display all order history of a store location
+        //display all order history of a customer
         static void Main(string[] args)
         {
-            Init();
+            string connectionString = SecretString.s;
 
             DbContextOptions<Project0Context> options = new DbContextOptionsBuilder<Project0Context>()
-                .UseSqlServer(connectionString)
-                .UseLoggerFactory(AppLoggerFactory)
-                .Options;
+                .UseSqlServer(connectionString).Options;
+
+            using var context = new Project0Context(options);
+            using DataBase data = new DataBase(context);
 
             string option = "";
             while (option != "Q")
@@ -382,31 +277,46 @@ namespace Project0.UserInterface
                 Console.WriteLine("**************MAIN MENU*************");
                 Console.WriteLine("* [1] - Place a new order          *");
                 Console.WriteLine("* [2] - Add a new customer         *");
-                Console.WriteLine("* [3] - Search for customer        *");
-                Console.WriteLine("* [4] - Display orders by Location *");
-                Console.WriteLine("* [5] - Display orders by customer *");
+                Console.WriteLine("* [3] - Add a new location         *");
+                Console.WriteLine("* [4] - Search for customer        *");
+                Console.WriteLine("* [5] - Search for Location        *");
+                Console.WriteLine("* [6] - Display orders by Location *");
+                Console.WriteLine("* [7] - Display orders by customer *");
                 Console.WriteLine("* [Q] - Quite                      *");
                 Console.WriteLine("************************************");
                 Console.WriteLine();
                 Console.Write("Please choise an option from the list: ");
                 option = Console.ReadLine();
 
+                if (option == "Q")
+                    return;
+
                 switch (option)
                 {
                     case "1": // place an order
-                        PlaceAnOrder();
+                        PlaceOrder(data);
                         break;
                     case "2": // Add a new customer
-                        AddCustomer();
+                        AddCustomer(data);
                         break;
-                    case "3": // Search for a customer
-                        FindCustomer();
+                    case "3": // Add a new Location
+                        AddLocation(data);
                         break;
-                    case "4": // Display orders by location
-                        PrintLocationOrders();
+                    case "4": // Search for a customer
+                        FindCustomer(data);
                         break;
-                    case "5": // Display orders by customers
-                        PrintCustomerOrders();
+                    case "5": // Search for a location
+                        FindLocation(data);
+                        break;
+                    case "6": // Display orders for a customer
+                        PrintCustomerOrders(data);
+                        break;
+                    case "7": // Display orders for a location
+                        PrintLocationOrders(data);
+                        break;
+                    default:
+                        Console.WriteLine("The input was invalid: Press enter to continue");
+                        Console.ReadLine();
                         break;
                 }
             }
