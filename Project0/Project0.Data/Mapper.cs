@@ -127,5 +127,25 @@ namespace Project0.Data
                 Quantity = order.Quantity,
             };
         }
+
+        public static Business.Product MapProduct(Entities.Products product)
+        {
+            return new Business.Product
+            {
+                Id = product.Id,
+                Name = product.Name,
+                CostPerUnit = product.CostPerUnit,
+            };
+        }
+
+        public static Entities.Products MapProduct(Business.Product product)
+        {
+            return new Entities.Products
+            {
+                Id = product.Id,
+                Name = product.Name,
+                CostPerUnit = product.CostPerUnit,
+            };
+        }
     }
 }

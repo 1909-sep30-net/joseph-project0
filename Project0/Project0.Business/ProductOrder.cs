@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Project0.Business
 {
     public class ProductOrder
     {
-        private string _name;
         private int _id;
+        private string _name;
         private int _orderId;
         private int _productId;
         private int _quantity;

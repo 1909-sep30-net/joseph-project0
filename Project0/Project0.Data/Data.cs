@@ -28,7 +28,7 @@ namespace Project0.Data
         {
             if (customer.Id != 0)
             {
-                Log.Warning("Customer allready exist in database", customer.Id);
+                Log.Warning("Customer allready exist in database allreay exists", customer.Id);
                 throw new ArgumentException("Customer allready exists in database");
             }
             else
@@ -44,7 +44,7 @@ namespace Project0.Data
         {
             if (location.Id != 0)
             {
-                Log.Information("Added {Name} to database", location.Name);
+                Log.Information("Added {Name} to database allreay exists", location.Name);
                 throw new ArgumentException("Location allready exists in database");
             }
 
@@ -52,7 +52,21 @@ namespace Project0.Data
             _context.Add(entity);
         }
 
-        public IEnumerable<Customer> getCustomers(string firstName = null, string lastName = null, int? id = null)
+        public void AddProduct(Product product)
+        {
+            if (product.Id != 0)
+            {
+                Log.Information("Added {Name} to database allreay exists", product.Name);
+                throw new ArgumentException("Location allready exists in database");
+            }
+
+            Products entity = Mapper.MapProduct(product);
+            _context.Add(entity);
+        }
+
+
+
+        public IEnumerable<Customer> GetAllCustomers(string firstName = null, string lastName = null, int? id = null)
         {
             IQueryable<Customers> items = _context.Customers
                 .Include(r => r.Orders);
@@ -67,7 +81,7 @@ namespace Project0.Data
             return items.Select(Mapper.MapCustomerToOrders);
         }
 
-        public IEnumerable<Location> getLocations(string name = null, int? id = null)
+        public IEnumerable<Location> GetAllLocations(string name = null, int? id = null)
         {
             IQueryable<Locations> items = _context.Locations
                 .Include(r => r.ProductEntry).Include(r => r.Orders);
@@ -78,6 +92,18 @@ namespace Project0.Data
                 items = items.Where(i => i.Id == id);
 
             return items.Select(Mapper.MapLocationsToInvetoryToOrders);
+        }
+
+        public IEnumerable<Product> GetAllProducts(string name = null, int? id = null)
+        {
+            IQueryable<Products> items = _context.Products.Include(r => r);
+
+            if (name != null)
+                items = items.Where(p => p.Name == name);
+            if (id != null)
+                items = items.Where(p => p.Id == id);
+
+            return items.Select(Mapper.MapProduct);
         }
 
         public void UpdateCustomer(Business.Customer customer)
@@ -95,7 +121,7 @@ namespace Project0.Data
 
             _context.Entry(currentEntity).CurrentValues.SetValues(newEntity);
         }
-
+        
         public void DeleteCustomer(Customer customer)
         {
             Log.Information("Removing customer with id {Id}", customer.Id);
