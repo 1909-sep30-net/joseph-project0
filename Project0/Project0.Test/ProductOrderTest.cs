@@ -69,7 +69,7 @@ namespace Project0.Test
         public void ProductId_Returns_Correctly()
         {
             int id = 1;
-            productOrder.OrderId = id;
+            productOrder.ProductId = id;
 
             Assert.Equal(id, productOrder.ProductId);
         }

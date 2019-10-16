@@ -15,10 +15,10 @@ namespace Project0.UserInterface
         {
             List<Order> sortedList = orders;
             // earliest, latest, cheapest, most expensive)
-            Console.WriteLine("[1] - Sort by date descending");
-            Console.WriteLine("[2] - Sort by date ascending");
-            Console.WriteLine("[3] - Sort by price descending");
-            Console.WriteLine("[4] - Sort by price ascending");
+            Console.WriteLine("[1] - Sort by date ascending");
+            Console.WriteLine("[2] - Sort by date descending");
+            Console.WriteLine("[3] - Sort by price ascending");
+            Console.WriteLine("[4] - Sort by price decscending");
             Console.WriteLine("[5] - None");
             Console.Write("Enter a sorting order for the oders to be displayed: ");
             string option = Console.ReadLine();
@@ -400,6 +400,9 @@ namespace Project0.UserInterface
                         data.AddOrder(order);
                         data.Save();
 
+                        foreach (ProductEntery p in location.Inventory)
+                            data.UpdateProductEntry(p);
+
                         data.UpdateLocation(location);
                         data.UpdateCustomer(customer);
                         data.Save();
@@ -758,7 +761,11 @@ namespace Project0.UserInterface
                     };
 
                     location.AddProduct(newProductEntery);
+                    data.AddProductEntery(newProductEntery);
+                    data.Save();
+
                     data.UpdateLocation(location);
+                    data.Save();
 
                     Console.Write("Product added: Press enter to continue ");
                     Console.ReadLine();
@@ -914,7 +921,8 @@ namespace Project0.UserInterface
                 }
                 else
                 {
-                    PrintOrders(location.Orders);
+                    List<Order> sortedList = SortOrders(location.Orders);
+                    PrintOrders(sortedList);
                     Console.Write("Press enter to continue: ");
                     Console.ReadLine();
                 }

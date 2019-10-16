@@ -102,3 +102,70 @@
 2019-10-15 21:26:22.534 -05:00 [INF] *****Program End*******
 2019-10-15 21:28:16.481 -05:00 [INF] *****Program Start*******
 2019-10-15 21:29:25.615 -05:00 [INF] *****Program End*******
+2019-10-16 01:05:26.382 -05:00 [INF] *****Program Start*******
+2019-10-16 01:06:05.776 -05:00 [INF] *****Program End*******
+2019-10-16 09:29:36.079 -05:00 [INF] *****Program Start*******
+2019-10-16 09:31:44.927 -05:00 [INF] *****Program End*******
+2019-10-16 09:33:15.358 -05:00 [INF] *****Program Start*******
+2019-10-16 09:35:15.732 -05:00 [INF] Saving changes to database
+2019-10-16 09:35:16.128 -05:00 [INF] Updated location Location3
+2019-10-16 09:35:16.134 -05:00 [INF] Updated cutomer FirstName1 LastName1
+2019-10-16 09:35:16.134 -05:00 [INF] Saving changes to database
+2019-10-16 09:37:23.407 -05:00 [INF] Updated location Location1
+2019-10-16 09:38:08.926 -05:00 [INF] Saving changes to database
+2019-10-16 09:38:09.073 -05:00 [INF] Updated location Location1
+2019-10-16 09:38:09.073 -05:00 [INF] Updated cutomer FirstName1 LastName1
+2019-10-16 09:38:09.073 -05:00 [INF] Saving changes to database
+2019-10-16 09:38:17.082 -05:00 [INF] *****Program End*******
+2019-10-16 09:47:30.496 -05:00 [INF] *****Program Start*******
+2019-10-16 09:47:59.652 -05:00 [INF] Updated location Location1
+2019-10-16 09:47:59.667 -05:00 [INF] Saving changes to database
+2019-10-16 09:48:23.198 -05:00 [INF] Saving changes to database
+2019-10-16 09:48:23.444 -05:00 [INF] Updated location Location1
+2019-10-16 09:48:23.446 -05:00 [INF] Updated cutomer FirstName1 LastName1
+2019-10-16 09:48:23.447 -05:00 [INF] Saving changes to database
+2019-10-16 09:49:02.837 -05:00 [INF] *****Program End*******
+2019-10-16 12:49:42.166 -05:00 [INF] *****Program Start*******
+2019-10-16 12:50:01.670 -05:00 [INF] Saving changes to database
+2019-10-16 12:50:01.912 -05:00 [INF] Updated location Location1
+2019-10-16 12:50:01.915 -05:00 [INF] Saving changes to database
+2019-10-16 12:50:39.091 -05:00 [INF] Saving changes to database
+2019-10-16 12:50:39.263 -05:00 [INF] Updated location Location1
+2019-10-16 12:50:39.267 -05:00 [INF] Updated cutomer joe m
+2019-10-16 12:50:39.268 -05:00 [INF] Saving changes to database
+2019-10-16 12:51:18.950 -05:00 [INF] Saving changes to database
+2019-10-16 12:51:19.076 -05:00 [INF] Updated location Location1
+2019-10-16 12:51:19.076 -05:00 [INF] Saving changes to database
+2019-10-16 12:53:28.384 -05:00 [INF] *****Program End*******
+2019-10-16 12:57:35.119 -05:00 [INF] *****Program Start*******
+2019-10-16 12:59:15.583 -05:00 [INF] Added another person to database
+2019-10-16 12:59:15.584 -05:00 [INF] Saving changes to database
+2019-10-16 12:59:36.135 -05:00 [INF] *****Program End*******
+2019-10-16 13:48:14.483 -05:00 [INF] *****Program Start*******
+2019-10-16 13:48:43.024 -05:00 [INF] Saving changes to database
+2019-10-16 13:48:43.313 -05:00 [INF] Updated location Location3
+2019-10-16 13:48:43.319 -05:00 [INF] Updated cutomer FirstName3 LastName3
+2019-10-16 13:48:43.320 -05:00 [INF] Saving changes to database
+2019-10-16 13:49:09.364 -05:00 [INF] Saving changes to database
+2019-10-16 13:49:09.508 -05:00 [INF] Updated location Location3
+2019-10-16 13:49:09.509 -05:00 [INF] Updated cutomer FirstName3 LastName3
+2019-10-16 13:49:09.509 -05:00 [INF] Saving changes to database
+2019-10-16 13:49:13.425 -05:00 [INF] *****Program End*******
+2019-10-16 13:54:59.190 -05:00 [INF] *****Program Start*******
+2019-10-16 13:55:18.875 -05:00 [INF] Saving changes to database
+2019-10-16 13:55:19.151 -05:00 [INF] Updated location Location3
+2019-10-16 13:55:19.154 -05:00 [INF] Updated cutomer another person
+2019-10-16 13:55:19.154 -05:00 [INF] Saving changes to database
+2019-10-16 13:55:41.848 -05:00 [INF] Saving changes to database
+2019-10-16 13:55:41.992 -05:00 [INF] Updated location Location3
+2019-10-16 13:55:41.992 -05:00 [INF] Updated cutomer john bowman
+2019-10-16 13:55:41.992 -05:00 [INF] Saving changes to database
+2019-10-16 13:55:46.648 -05:00 [INF] *****Program End*******
+2019-10-16 15:09:06.245 -05:00 [INF] *****Program Start*******
+2019-10-16 15:11:34.678 -05:00 [INF] Added joe bob to database
+2019-10-16 15:11:34.680 -05:00 [INF] Saving changes to database
+2019-10-16 15:13:59.267 -05:00 [INF] Saving changes to database
+2019-10-16 15:13:59.526 -05:00 [INF] Updated location Location1
+2019-10-16 15:13:59.529 -05:00 [INF] Updated cutomer joe bob
+2019-10-16 15:13:59.530 -05:00 [INF] Saving changes to database
+2019-10-16 15:18:43.800 -05:00 [INF] *****Program End*******

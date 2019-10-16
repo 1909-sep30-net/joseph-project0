@@ -30,6 +30,8 @@ namespace Project0.Business
         /// <param name="product">product object to add to the database</param>
         public void AddProduct(Product product);
 
+        public void AddProductEntery(ProductEntery product);
+
         /// <summary>
         /// adds a new order and productOrders to the database
         /// </summary>

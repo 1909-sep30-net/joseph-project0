@@ -86,6 +86,12 @@ namespace Project0.Data
             _context.Add(entity);
         }
 
+        public void AddProductEntery(ProductEntery product)
+        {
+            ProductEntry entity = Mapper.MapProductEnteries(product);
+            _context.Add(entity);
+        }
+
         /// <summary>
         /// adds a new order and productOrders to the database
         /// </summary>
@@ -198,17 +204,11 @@ namespace Project0.Data
         /// <param name="location">location object to update the database with</param>
         public void UpdateLocation(Business.Location location)
         {
-            //foreach (ProductEntery pe in location.Inventory)
-            //    UpdateProductEntry(pe);
-
             Locations currentEntity = _context.Locations.Find(location.Id);
             Locations newEntity = Mapper.MapLocationsToInvetoryToOrders(location);
 
             Log.Information("Updated location {Name}", location.Name);
             _context.Entry(currentEntity).CurrentValues.SetValues(newEntity);
-
-            //foreach (ProductEntery po in location.Inventory)
-            //    UpdateProductEntry(po);
         }
 
         /// <summary>
