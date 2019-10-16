@@ -9,21 +9,35 @@ using Serilog;
 
 namespace Project0.Data
 {
-    public class DataBase : IDisposable
+    public class DataBase : IDataBase, IDisposable
     {
+        /// <summary>
+        /// Dbcontext for accessing the database
+        /// </summary>
         private readonly Project0Context _context;
 
+        /// <summary>
+        /// constructor for the project0 database access
+        /// </summary>
+        /// <param name="context">Dbcontext for accessing the database</param>
         public DataBase(Project0Context context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        /// <summary>
+        /// save all changes made to the database
+        /// </summary>
         public void Save()
         {
             Log.Information("Saving changes to database");
             _context.SaveChanges();
         }
 
+        /// <summary>
+        /// adds a new Customer to the data base
+        /// </summary>
+        /// <param name="customer">Customer object to add to the database</param>
         public void AddCustomer(Customer customer)
         {
             if (customer.Id != 0)
@@ -40,6 +54,10 @@ namespace Project0.Data
             }
         }
 
+        /// <summary>
+        /// adds a new location to the database
+        /// </summary>
+        /// <param name="location">Location object to add to the database</param>
         public void AddLocation(Location location)
         {
             if (location.Id != 0)
@@ -52,6 +70,10 @@ namespace Project0.Data
             _context.Add(entity);
         }
 
+        /// <summary>
+        /// adds a new product to the database
+        /// </summary>
+        /// <param name="product">product object to add to the database</param>
         public void AddProduct(Product product)
         {
             if (product.Id != 0)
@@ -64,12 +86,47 @@ namespace Project0.Data
             _context.Add(entity);
         }
 
+        /// <summary>
+        /// adds a new order and productOrders to the database
+        /// </summary>
+        /// <param name="order">order object to add to the database</param>
+        public void AddOrder(Order order)
+        {
+            Entities.Orders newOrder = Mapper.MapOrder(order);
 
+            _context.Add(newOrder);
+        }
 
+        /// <summary>
+        /// updates a productOrder in th database
+        /// </summary>
+        /// <param name="productOrder">product order to update</param>
+        public void AddProductOrder(Business.ProductOrder productOrder)
+        {
+            Entities.ProductOrder entity = new Entities.ProductOrder()
+            {
+                Id = 0,
+                OrderId = productOrder.OrderId,
+                ProductId = productOrder.ProductId,
+                Quantity = productOrder.Quantity,
+            };
+
+            _context.Add(entity);
+        }
+       
+        /// <summary>
+        /// gets a list of all customers in the database
+        /// includes order history
+        /// can be used to search by cusotmer first name, last name, and id
+        /// </summary>
+        /// <param name="firstName">first name of customer to search for</param>
+        /// <param name="lastName">last name of customer to search for</param>
+        /// <param name="id">id of the customer to search for</param>
+        /// <returns>a list of all Cusotmer objects found</returns>
         public IEnumerable<Customer> GetAllCustomers(string firstName = null, string lastName = null, int? id = null)
         {
             IQueryable<Customers> items = _context.Customers
-                .Include(r => r.Orders);
+                .Include(r => r.Orders).ThenInclude(po => po.ProductOrder).ThenInclude(p => p.Product);
 
             if (firstName != null)
                 items = items.Where(c => c.FirstName == firstName);
@@ -81,10 +138,19 @@ namespace Project0.Data
             return items.Select(Mapper.MapCustomerToOrders);
         }
 
+        /// <summary>
+        /// gets a list of all locations in the database
+        /// each location includes invintory and order history
+        /// can be used to search by location name and id
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IEnumerable<Location> GetAllLocations(string name = null, int? id = null)
         {
             IQueryable<Locations> items = _context.Locations
-                .Include(r => r.ProductEntry).Include(r => r.Orders);
+                .Include(pe => pe.ProductEntry).ThenInclude(p => p.Product)
+                .Include(o => o.Orders).ThenInclude(po => po.ProductOrder).ThenInclude(p => p.Product);
 
             if (name != null)
                 items = items.Where(n => n.Name == name);
@@ -94,6 +160,13 @@ namespace Project0.Data
             return items.Select(Mapper.MapLocationsToInvetoryToOrders);
         }
 
+        /// <summary>
+        /// gets all the products in the database
+        /// can be used to search by product name and id
+        /// </summary>
+        /// <param name="name">name of the product to search for</param>
+        /// <param name="id">id of the product to search for</param>
+        /// <returns>list of products</returns>
         public IEnumerable<Product> GetAllProducts(string name = null, int? id = null)
         {
             IQueryable<Products> items = _context.Products.Include(r => r);
@@ -106,66 +179,110 @@ namespace Project0.Data
             return items.Select(Mapper.MapProduct);
         }
 
+        /// <summary>
+        /// updates a customer and order history in the database
+        /// </summary>
+        /// <param name="customer">customer object to update the database with</param>
         public void UpdateCustomer(Business.Customer customer)
         {
             Customers currentEntity = _context.Customers.Find(customer.Id);
             Customers newEntity = Mapper.MapCustomerToOrders(customer);
 
+            Log.Information("Updated cutomer {FirstName} {LastName}", customer.FirstName, customer.LastName);
             _context.Entry(currentEntity).CurrentValues.SetValues(newEntity);
         }
 
+        /// <summary>
+        /// updates a customer, inventory, and order history in the database
+        /// </summary>
+        /// <param name="location">location object to update the database with</param>
         public void UpdateLocation(Business.Location location)
         {
+            //foreach (ProductEntery pe in location.Inventory)
+            //    UpdateProductEntry(pe);
+
             Locations currentEntity = _context.Locations.Find(location.Id);
             Locations newEntity = Mapper.MapLocationsToInvetoryToOrders(location);
 
+            Log.Information("Updated location {Name}", location.Name);
+            _context.Entry(currentEntity).CurrentValues.SetValues(newEntity);
+
+            //foreach (ProductEntery po in location.Inventory)
+            //    UpdateProductEntry(po);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="productEntery"></param>
+        public void UpdateProductEntry(ProductEntery productEntery)
+        {
+            ProductEntry currentEntity = _context.ProductEntry.Find(productEntery.Id);
+            ProductEntry newEntity = Mapper.MapProductEnteries(productEntery);
+
             _context.Entry(currentEntity).CurrentValues.SetValues(newEntity);
         }
-        
+
+        /// <summary>
+        /// delete a customer from the database
+        /// </summary>
+        /// <param name="customer">customer to be deleted</param>
         public void DeleteCustomer(Customer customer)
         {
-            Log.Information("Removing customer with id {Id}", customer.Id);
+            Log.Information("Removing customer {FirstName} {LastName}", customer.FirstName, customer.LastName);
 
             Customers entity = _context.Customers.Find(customer.Id);
-            IQueryable<Orders> orders = _context.Orders.Where(p => p.CustomerId == customer.Id);
-
-            DeleteOrders(orders);
 
             _context.Remove(entity);
         }
 
+        /// <summary>
+        /// delete a location from the database
+        /// </summary>
+        /// <param name="location">location to be deleted</param>
         public void DeleteLocation(Location location)
         {
-            Log.Information("Removing location with id {Id}", location.Id);
+            Log.Information("Removing location {Name}", location.Name);
 
             Locations entity = _context.Locations.Find(location.Id);
             IQueryable<Orders> orders = _context.Orders.Where(p => p.LocationId == location.Id);
 
             DeleteProductEntries(location.Id);
-            DeleteOrders(orders);
             _context.Remove(entity);
         }
 
+        /// <summary>
+        /// delete a product entry in the database
+        /// </summary>
+        /// <param name="locationId">product order to be deleted</param>
         public void DeleteProductEntries(int locationId)
         {
             Log.Information("Removing all ProductEntry's with location Id {Id}", locationId);
 
             IQueryable<ProductEntry> productEntry = _context.ProductEntry
-                .Where(p => p.LocationId == locationId).AsNoTracking();
+                .Where(p => p.LocationId == locationId);
 
             _context.RemoveRange(productEntry);
         }
 
-        public void DeleteOrders(IQueryable<Orders> orders)
+        /// <summary>
+        /// delete an order from the database
+        /// </summary>
+        /// <param name="orders">order to be deleted</param>
+        public void DeleteOrders(IQueryable<Order> orders)
         {
             Log.Information("Removing all Orders");
 
-            foreach (Orders o in orders)
+            foreach (Order o in orders)
                 DeletProductOrders(o.Id);
 
             _context.RemoveRange(orders);
         }
 
+        /// <summary>
+        /// delete a product order from the database
+        /// </summary>
+        /// <param name="orderId">id of the product order to delete</param>
         public void DeletProductOrders(int orderId)
         {
             Log.Information("Removing all ProductOrders with order Id {Id}", orderId);

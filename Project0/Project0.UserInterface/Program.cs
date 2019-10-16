@@ -11,6 +11,39 @@ namespace Project0.UserInterface
 {
     class Program
     {
+        public static List<Order> SortOrders(List<Order> orders)
+        {
+            List<Order> sortedList = orders;
+            // earliest, latest, cheapest, most expensive)
+            Console.WriteLine("[1] - Sort by date descending");
+            Console.WriteLine("[2] - Sort by date ascending");
+            Console.WriteLine("[3] - Sort by price descending");
+            Console.WriteLine("[4] - Sort by price ascending");
+            Console.WriteLine("[5] - None");
+            Console.Write("Enter a sorting order for the oders to be displayed: ");
+            string option = Console.ReadLine();
+
+            switch (option)
+            {
+                case "1":
+                    sortedList = orders.OrderBy(o => o.Time).ToList();
+                    break;
+                case "2":
+                    sortedList = orders.OrderBy(o => o.Time).Reverse().ToList();
+                    break;
+                case "3":
+                    sortedList = orders.OrderBy(o => o.TotalPrice).ToList();
+                    break;
+                case "4":
+                    sortedList = orders.OrderBy(o => o.TotalPrice).Reverse().ToList();
+                    break;
+                defualt:
+                    break;
+            }
+
+            return sortedList;
+        }
+
         /// <summary>
         /// gets user input and validates that input agianst the given list of Customers return
         /// returns a user chosen index from the list thats validated
@@ -251,8 +284,7 @@ namespace Project0.UserInterface
         public static void PrintOrders(List<Order> orders)
         {
             foreach (Order o in orders)
-                Console.WriteLine($"Order Id = [{o.Id}]  Location Id = [{o.LocationId}]  " +
-                    $"Customer Id = [{o.CustomerId}]  Total = [{o.TotalPrice}]");
+                PrintOrder(o);
         }
 
         /// <summary>
@@ -261,19 +293,20 @@ namespace Project0.UserInterface
         /// <param name="order">the order object</param>
         public static void PrintOrder(Order order)
         {
-            Console.WriteLine($"Order Id = [{order.Id}]  Location Id = [{order.LocationId}]  " +
-                    $"Customer Id = [{order.CustomerId}]  Total = [{order.TotalPrice}]");
+            Console.WriteLine($"\nOrder Id = [{order.Id}]  Location Id = [{order.LocationId}]  " +
+                    $"Customer Id = [{order.CustomerId}]  Date Ordered = [{order.Time}]  Total = [{order.TotalPrice}]\n");
 
             foreach (Business.ProductOrder p in order.ProductOrders)
-                Console.WriteLine($"Id = [{p.Id}]  Name = [{p.Name}]  Quantity = [{p.Quantity}]");
+                Console.WriteLine($"\tId = [{p.Id}]  Name = [{p.Name}]  Quantity = [{p.Quantity}]");
 
+            Console.WriteLine();
         }
 
         /// <summary>
         /// prints to console all the known products currently in the database
         /// </summary>
         /// <param name="data">the DBcontect for the database</param>
-        public static void PrintAllProducts(DataBase data)
+        public static void PrintAllProducts(IDataBase data)
         {
             List<Product> products = data.GetAllProducts().ToList();
 
@@ -286,7 +319,7 @@ namespace Project0.UserInterface
         /// sub menu for creating a new order then adding it to the database
         /// </summary>
         /// <param name="data">the DBcontect for the database</param>
-        public static void PlaceOrder(DataBase data)
+        public static void PlaceOrder(IDataBase data)
         {
             List<Customer> customers = data.GetAllCustomers().ToList();
             List<Location> locations = data.GetAllLocations().ToList();
@@ -329,15 +362,16 @@ namespace Project0.UserInterface
                 ProductEntery product = location.Inventory[GetValidProductEntery(location.Inventory)];
                 Console.WriteLine("Enter the quantity to perchase: ");
 
-                int id;
-                if (int.TryParse(Console.ReadLine(), out id))
+                int quantity;
+                if (int.TryParse(Console.ReadLine(), out quantity))
                 {
                     Business.ProductOrder productOrder = new Business.ProductOrder()
                     {
                         Name = product.Name,
                         Id = 0,
                         OrderId = 0,
-                        ProductId = product.Id,
+                        ProductId = product.ProductId,
+                        Quantity = quantity,
                         PricePerUnit = product.PricePerUnit,
                     };
 
@@ -346,9 +380,11 @@ namespace Project0.UserInterface
                 else
                 {
                     Console.WriteLine("Quantity was invalid:");
+
                 }
 
                 Console.WriteLine("---Current order information---");
+                PrintOrder(order);
                 
                 Console.Write("[y/n] - would you like to add another product to the order: ");
 
@@ -361,10 +397,14 @@ namespace Project0.UserInterface
                         location.PlaceOrder(order);
                         customer.Orders.Add(order);
 
+                        data.AddOrder(order);
+                        data.Save();
+
                         data.UpdateLocation(location);
                         data.UpdateCustomer(customer);
                         data.Save();
 
+                        PrintOrder(order);
                         Console.Write("Order placed: Press enter to return to the main menu: ");
                         Console.ReadLine();
                     }
@@ -392,7 +432,7 @@ namespace Project0.UserInterface
         /// sub menu for creating a new Customer and adding it to the database
         /// </summary>
         /// <param name="data">the DBcontect for the database</param>
-        public static void AddCustomer(DataBase data)
+        public static void AddCustomer(IDataBase data)
         {
             Console.Write("Enter the first name of the customer: ");
             string firstName = Console.ReadLine();
@@ -446,7 +486,7 @@ namespace Project0.UserInterface
         /// sub menu for creating a new Location and adding it to the database
         /// </summary>
         /// <param name="data">the DBcontect for the database</param>
-        public static void AddLocation(DataBase data)
+        public static void AddLocation(IDataBase data)
         {
             Console.Write("Enter the a name of the location: ");
             string name = Console.ReadLine();
@@ -495,7 +535,7 @@ namespace Project0.UserInterface
         /// sub menu for creating a new Product and adding it to the database
         /// </summary>
         /// <param name="data">the DBcontect for the database</param>
-        public static void AddProduct(DataBase data)
+        public static void AddProduct(IDataBase data)
         {
             Console.Write("Enter a name for the product: ");
             string name = Console.ReadLine();
@@ -555,7 +595,7 @@ namespace Project0.UserInterface
         /// sub menu for Deleteing a Customer from the database
         /// </summary>
         /// <param name="data">the DBcontect for the database</param>
-        public static void DeleteCustomer(DataBase data)
+        public static void DeleteCustomer(IDataBase data)
         {
             List<Customer> customers = data.GetAllCustomers().ToList();
 
@@ -597,7 +637,7 @@ namespace Project0.UserInterface
             }
             else
             {
-                Console.WriteLine("Deleting customer aborted: Press enter to continue to main menu ");
+                Console.WriteLine("Deleting customer aborted: Press enter to continue ");
                 Console.ReadLine();
             }
         }
@@ -606,7 +646,7 @@ namespace Project0.UserInterface
         /// sub menu for Deleteing a Location from the database
         /// </summary>
         /// <param name="data"></param>
-        public static void DeleteLocation(DataBase data)
+        public static void DeleteLocation(IDataBase data)
         {
             List<Location> locations = data.GetAllLocations().ToList();
 
@@ -648,7 +688,7 @@ namespace Project0.UserInterface
             }
             else
             {
-                Console.WriteLine("Deleting customer aborted: Press enter to continue to main menu ");
+                Console.WriteLine("Deleting customer aborted: Press enter to continue ");
                 Console.ReadLine();
             }
         }
@@ -657,7 +697,7 @@ namespace Project0.UserInterface
         /// sub menu for Deleteing a Product from the database
         /// </summary>
         /// <param name="data">the DBcontect for the database</param>
-        public static void DeleteProduct(DataBase data)
+        public static void DeleteProduct(IDataBase data)
         {
             Console.WriteLine("Need to be implimented! Press enter to cotinue");
             Console.ReadLine();
@@ -669,7 +709,7 @@ namespace Project0.UserInterface
         /// products are stored as ProductEntery in Locations that is they also have a quantity field
         /// </summary>
         /// <param name="data">the DBcontect for the database</param>
-        public static void AddProductToLocation(DataBase data)
+        public static void AddProductToLocation(IDataBase data)
         {
             List<Location> locations= data.GetAllLocations().ToList();
             List<Product> products = data.GetAllProducts().ToList();
@@ -719,6 +759,9 @@ namespace Project0.UserInterface
 
                     location.AddProduct(newProductEntery);
                     data.UpdateLocation(location);
+
+                    Console.Write("Product added: Press enter to continue ");
+                    Console.ReadLine();
                 }
                 catch (ArgumentException ex)
                 {
@@ -741,14 +784,14 @@ namespace Project0.UserInterface
         /// sub menu for serching the database for Customers
         /// </summary>
         /// <param name="data">the DBcontect for the database</param>
-        public static void FindCustomer(DataBase data)
+        public static void FindCustomer(IDataBase data)
         {
             Console.Clear();
-            Console.WriteLine("[1] - get all customers with first name");
-            Console.WriteLine("[2] - get all customers with last name");
-            Console.WriteLine("[3] - get customers by full name");
-            Console.WriteLine("[4] - get customers by Id");
-            Console.WriteLine("[5] - return to main menu");
+            Console.WriteLine("[1] - Get all customers with first name");
+            Console.WriteLine("[2] - Get all customers with last name");
+            Console.WriteLine("[3] - Get customers by full name");
+            Console.WriteLine("[4] - Get customers by Id");
+            Console.WriteLine("[5] - Exit find Customer");
             Console.Write("Enter an option from the list: ");
             var input = Console.ReadLine();
 
@@ -785,7 +828,6 @@ namespace Project0.UserInterface
                     if (int.TryParse(stringId, out id))
                     {
                         PrintCustomers(data.GetAllCustomers(id: id).ToList());
-
                     }
                     else
                     {
@@ -807,12 +849,12 @@ namespace Project0.UserInterface
         /// sub menu for serching the database for Locations
         /// </summary>
         /// <param name="data">the DBcontect for the database</param>
-        public static void FindLocation(DataBase data)
+        public static void FindLocation(IDataBase data)
         {
             Console.Clear();
-            Console.WriteLine("[1] - get location by name");
-            Console.WriteLine("[2] - get location by Id");
-            Console.WriteLine("[3] - return to main menu");
+            Console.WriteLine("[1] - Get location by name");
+            Console.WriteLine("[2] - Get location by Id");
+            Console.WriteLine("[3] - Exit find location");
             Console.Write("Enter an option from the list: ");
             var input = Console.ReadLine();
 
@@ -852,7 +894,7 @@ namespace Project0.UserInterface
         /// sub menu for selecting a Location to display all orders place at this location
         /// </summary>
         /// <param name="data">the DBcontect for the database</param>
-        public static void PrintLocationOrders(DataBase data)
+        public static void PrintLocationOrders(IDataBase data)
         {
             List<Location> locations = data.GetAllLocations().ToList();
 
@@ -873,6 +915,7 @@ namespace Project0.UserInterface
                 else
                 {
                     PrintOrders(location.Orders);
+                    Console.Write("Press enter to continue: ");
                     Console.ReadLine();
                 }
             }
@@ -882,13 +925,13 @@ namespace Project0.UserInterface
         /// sub menu for selecting a Customer to display all orders placed by this customer
         /// </summary>
         /// <param name="data">the DBcontect for the database</param>
-        public static void PrintCustomerOrders(DataBase data)
+        public static void PrintCustomerOrders(IDataBase data)
         {
             List<Customer> customers = data.GetAllCustomers().ToList();
 
             if (customers.Count == 0)
             {
-                Console.WriteLine("There are currently no customers: Press enter to continue");
+                Console.Write("There are currently no customers: Press enter to continue: ");
                 Console.ReadLine();
             }
             else
@@ -902,13 +945,19 @@ namespace Project0.UserInterface
                 }
                 else
                 {
-                    PrintOrders(customer.Orders);
+                    List<Order> sortedList = SortOrders(customer.Orders);
+                    PrintOrders(sortedList);
+                    Console.Write("Press enter to continue: ");
                     Console.ReadLine();
                 }
             }
         }
 
-        public static void CustomerMenu(DataBase data)
+        /// <summary>
+        /// menu for handling customer operations
+        /// </summary>
+        /// <param name="data">the DBcontect for the database</param>
+        public static void CustomerMenu(IDataBase data)
         {
             while (true)
             {
@@ -954,7 +1003,11 @@ namespace Project0.UserInterface
 
         }
 
-        public static void LocationMenu(DataBase data)
+        /// <summary>
+        /// menu for handling location operations
+        /// </summary>
+        /// <param name="data">the DBcontect for the database</param>
+        public static void LocationMenu(IDataBase data)
         {
             while (true)
             {
@@ -1003,7 +1056,11 @@ namespace Project0.UserInterface
 
         }
 
-        public static void ProductMenu(DataBase data)
+        /// <summary>
+        /// menu for handling product operations
+        /// </summary>
+        /// <param name="data">the DBcontect for the database</param>
+        public static void ProductMenu(IDataBase data)
         {
             while (true)
             {
@@ -1039,30 +1096,32 @@ namespace Project0.UserInterface
             }
 
         }
+
         static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.File("../../../serilog.txt")
                 .CreateLogger();
 
-            Log.Information("it worked!");
+            Log.Information("*****Program Start*******");
 
             DbContextOptions<Project0Context> options = new DbContextOptionsBuilder<Project0Context>()
                 .UseSqlServer(SecretString.s).Options;
 
             using var context = new Project0Context(options);
-            using DataBase data = new DataBase(context);
+            using IDataBase data = new DataBase(context);
 
             string option = "";
             while (option != "Q")
             {
                 Console.Clear();
-                Console.WriteLine("*******MAIN MENU*******");
-                Console.WriteLine("* [0] - Customer Menu *");
-                Console.WriteLine("* [1] - Location Menu *");
-                Console.WriteLine("* [2] - Product Menu  *");
-                Console.WriteLine("* [3] - Quit          *");
-                Console.WriteLine("***********************");
+                Console.WriteLine("*******MAIN MENU********");
+                Console.WriteLine("* [0] - Place an order *");
+                Console.WriteLine("* [1] - Customer Menu  *");
+                Console.WriteLine("* [2] - Location Menu  *");
+                Console.WriteLine("* [3] - Product Menu   *");
+                Console.WriteLine("* [Q] - Quit           *");
+                Console.WriteLine("************************");
                 Console.WriteLine();
                 Console.Write("Please choise an option from the list: ");
                 option = Console.ReadLine();
@@ -1070,15 +1129,18 @@ namespace Project0.UserInterface
                 switch (option)
                 {
                     case "0": // Customer menu
+                        PlaceOrder(data);
+                        break;
+                    case "1": // Customer menu
                         CustomerMenu(data);
                         break;
-                    case "1": // location menu
+                    case "2": // Location Menu
                         LocationMenu(data);
                         break;
-                    case "2": // product menu
+                    case "3": // Products Menu
                         ProductMenu(data);
                         break;
-                    case "3": // quit program
+                    case "Q": // Quit program
                         break;
                     default:
                         Console.WriteLine("The input was invalid: Press enter to continue");
@@ -1086,6 +1148,7 @@ namespace Project0.UserInterface
                         break;
                 }
             }
+            Log.Information("*****Program End*******");
         }
     }
 }

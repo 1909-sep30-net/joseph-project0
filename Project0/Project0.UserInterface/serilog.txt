@@ -18,3 +18,87 @@
 2019-10-14 15:52:24.386 -05:00 [INF] it worked!
 2019-10-14 16:31:32.841 -05:00 [INF] it worked!
 2019-10-14 16:34:03.735 -05:00 [INF] it worked!
+2019-10-14 21:30:00.180 -05:00 [INF] it worked!
+2019-10-14 21:30:22.065 -05:00 [INF] Added joe m to database
+2019-10-14 21:30:22.068 -05:00 [INF] Saving changes to database
+2019-10-14 21:32:24.305 -05:00 [INF] Removing customer with id 4
+2019-10-14 21:32:24.315 -05:00 [INF] Removing all Orders
+2019-10-14 21:32:24.550 -05:00 [INF] Saving changes to database
+2019-10-14 21:38:33.147 -05:00 [INF] it worked!
+2019-10-15 08:59:12.984 -05:00 [INF] it worked!
+2019-10-15 09:04:17.591 -05:00 [INF] Saving changes to database
+2019-10-15 10:11:39.315 -05:00 [INF] it worked!
+2019-10-15 10:18:36.092 -05:00 [INF] it worked!
+2019-10-15 10:34:46.852 -05:00 [INF] it worked!
+2019-10-15 10:37:58.514 -05:00 [INF] it worked!
+2019-10-15 10:44:24.793 -05:00 [INF] it worked!
+2019-10-15 10:55:35.193 -05:00 [INF] it worked!
+2019-10-15 11:03:06.138 -05:00 [INF] it worked!
+2019-10-15 11:20:49.910 -05:00 [INF] it worked!
+2019-10-15 11:22:25.258 -05:00 [INF] it worked!
+2019-10-15 11:27:25.675 -05:00 [INF] it worked!
+2019-10-15 11:39:31.560 -05:00 [INF] it worked!
+2019-10-15 11:46:07.334 -05:00 [INF] it worked!
+2019-10-15 12:50:59.927 -05:00 [INF] it worked!
+2019-10-15 12:58:49.384 -05:00 [INF] it worked!
+2019-10-15 12:59:18.264 -05:00 [INF] Saving changes to database
+2019-10-15 12:59:18.510 -05:00 [WRN] Error in database update An error occurred while updating the entries. See the inner exception for details.
+2019-10-15 13:35:54.197 -05:00 [INF] it worked!
+2019-10-15 13:36:13.835 -05:00 [INF] Added joe m to database
+2019-10-15 13:36:13.836 -05:00 [INF] Saving changes to database
+2019-10-15 14:04:13.806 -05:00 [INF] it worked!
+2019-10-15 14:25:48.132 -05:00 [INF] it worked!
+2019-10-15 14:26:04.379 -05:00 [INF] Saving changes to database
+2019-10-15 14:26:04.671 -05:00 [WRN] Error in database update An error occurred while updating the entries. See the inner exception for details.
+2019-10-15 14:48:51.826 -05:00 [INF] it worked!
+2019-10-15 14:49:49.438 -05:00 [INF] Saving changes to database
+2019-10-15 14:49:49.755 -05:00 [WRN] Error in database update An error occurred while updating the entries. See the inner exception for details.
+2019-10-15 15:01:58.047 -05:00 [INF] it worked!
+2019-10-15 15:04:20.785 -05:00 [INF] Added bob l to database
+2019-10-15 15:04:20.786 -05:00 [INF] Saving changes to database
+2019-10-15 15:04:48.893 -05:00 [INF] Removing customer with id 6
+2019-10-15 15:04:48.898 -05:00 [INF] Removing all Orders
+2019-10-15 15:04:48.969 -05:00 [INF] Saving changes to database
+2019-10-15 15:10:47.534 -05:00 [INF] it worked!
+2019-10-15 15:12:08.360 -05:00 [INF] it worked!
+2019-10-15 15:28:58.670 -05:00 [INF] it worked!
+2019-10-15 15:32:46.748 -05:00 [INF] Saving changes to database
+2019-10-15 15:32:47.300 -05:00 [INF] Saving changes to database
+2019-10-15 15:37:50.737 -05:00 [INF] it worked!
+2019-10-15 16:52:20.435 -05:00 [INF] it worked!
+2019-10-15 16:52:57.886 -05:00 [INF] Added john bowman to database
+2019-10-15 16:52:57.886 -05:00 [INF] Saving changes to database
+2019-10-15 16:57:25.314 -05:00 [INF] it worked!
+2019-10-15 17:04:43.824 -05:00 [INF] it worked!
+2019-10-15 17:09:30.281 -05:00 [INF] it worked!
+2019-10-15 17:10:10.927 -05:00 [INF] Saving changes to database
+2019-10-15 17:10:11.223 -05:00 [INF] Saving changes to database
+2019-10-15 19:59:33.945 -05:00 [INF] *****Program Start*******
+2019-10-15 20:00:47.028 -05:00 [INF] *****Program End*******
+2019-10-15 20:02:00.380 -05:00 [INF] *****Program Start*******
+2019-10-15 20:02:28.149 -05:00 [INF] Saving changes to database
+2019-10-15 20:02:28.482 -05:00 [INF] Saving changes to database
+2019-10-15 20:03:38.171 -05:00 [INF] *****Program End*******
+2019-10-15 20:06:59.976 -05:00 [INF] *****Program Start*******
+2019-10-15 20:07:34.317 -05:00 [INF] Saving changes to database
+2019-10-15 20:07:34.636 -05:00 [INF] Saving changes to database
+2019-10-15 20:07:52.168 -05:00 [INF] *****Program End*******
+2019-10-15 20:08:55.240 -05:00 [INF] *****Program Start*******
+2019-10-15 20:09:39.011 -05:00 [INF] Saving changes to database
+2019-10-15 20:09:39.325 -05:00 [INF] Saving changes to database
+2019-10-15 20:09:48.916 -05:00 [INF] *****Program End*******
+2019-10-15 20:10:43.232 -05:00 [INF] *****Program Start*******
+2019-10-15 20:12:53.908 -05:00 [INF] *****Program End*******
+2019-10-15 20:37:59.301 -05:00 [INF] *****Program Start*******
+2019-10-15 20:42:48.948 -05:00 [INF] *****Program Start*******
+2019-10-15 20:43:56.625 -05:00 [INF] *****Program End*******
+2019-10-15 21:00:55.027 -05:00 [INF] *****Program Start*******
+2019-10-15 21:01:25.501 -05:00 [INF] Saving changes to database
+2019-10-15 21:01:25.824 -05:00 [INF] Updated location Location1
+2019-10-15 21:01:25.830 -05:00 [INF] Updated cutomer john bowman
+2019-10-15 21:01:25.831 -05:00 [INF] Saving changes to database
+2019-10-15 21:03:12.503 -05:00 [INF] *****Program End*******
+2019-10-15 21:24:49.212 -05:00 [INF] *****Program Start*******
+2019-10-15 21:26:22.534 -05:00 [INF] *****Program End*******
+2019-10-15 21:28:16.481 -05:00 [INF] *****Program Start*******
+2019-10-15 21:29:25.615 -05:00 [INF] *****Program End*******

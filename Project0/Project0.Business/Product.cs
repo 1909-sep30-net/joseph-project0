@@ -7,10 +7,14 @@ namespace Project0.Business
     /// </summary>
     public class Product
     {
-        private int _id; // product ID
-        private string _name; // name of the product
-        private decimal _costPerUnit;
+        private int _id;                // product ID
+        private string _name;           // name of the product
+        private decimal _costPerUnit;   //the price for one unit of this product
 
+        /// <summary>
+        /// property of the _id field
+        /// throws an ArgumentException for ids less than 0
+        /// </summary>
         public int Id
         {
             get => _id;
@@ -23,6 +27,10 @@ namespace Project0.Business
             }
         }
 
+        /// <summary>
+        /// property of the _name field
+        /// throws an ArgumentException for empty names
+        /// </summary>
         public string Name
         {
             get => _name;
@@ -35,6 +43,10 @@ namespace Project0.Business
             }
         }
 
+        /// <summary>
+        /// property of the _costPerUnit field
+        /// throws an ArgumentException for prices less than 0
+        /// </summary>
         public decimal CostPerUnit
         {
             get => _costPerUnit;

@@ -9,10 +9,14 @@ namespace Project0.Business
     /// </summary>
     public class Customer
     {
-        private int _id; // customers ID
-        private string _firstName; // customers first name
-        private string _lastName; // custumers last name
+        private int _id;            // customers ID
+        private string _firstName;  // customers first name
+        private string _lastName;   // custumers last name
 
+        /// <summary>
+        /// property of the _id field
+        /// throws an ArgumentException if id is less than 0
+        /// </summary>
         public int Id
         {
             get => _id;
@@ -24,6 +28,11 @@ namespace Project0.Business
                 _id = value;
             }
         }
+
+        /// <summary>
+        /// property of the _firstName field
+        /// throws an ArgumentException if the name is empty
+        /// </summary>
         public string FirstName
         {
             get => _firstName;
@@ -35,6 +44,11 @@ namespace Project0.Business
                 _firstName = value;
             }
         }
+
+        /// <summary>
+        /// propert of the _lastName field
+        /// throws an ArgumentException if the name is empty 
+        /// </summary>
         public string LastName
         {
             get => _lastName;
@@ -46,8 +60,15 @@ namespace Project0.Business
                 _lastName = value;
             }
         }
+
+        /// <summary>
+        /// list of all orders made by this customer
+        /// </summary>
         public List<Order> Orders { get; set; } = new List<Order>();
 
+        /// <summary>
+        /// generates the total puchases made by this customer
+        /// </summary>
         public decimal TotalPurchases
         {
             get

@@ -7,10 +7,34 @@ namespace Project0.Test
 {
     public class CustomerTest
     {
-        private readonly Customer customer = new Customer();
+        private readonly Customer customer = new Customer()
+        {
+            Id = 1,
+            FirstName = "firstName",
+            LastName = "lastName",
+        };
+
         private readonly List<Order> orders = new List<Order>
         {
             new Order()
+            {
+                Id = 1,
+                LocationId = 1,
+                CustomerId = 1,
+                Time = DateTime.Now,
+                ProductOrders = new List<ProductOrder>()
+                {
+                    new ProductOrder()
+                    {
+                        Name = "p1",
+                        Id = 1,
+                        OrderId = 1,
+                        ProductId = 1,
+                        Quantity = 1,
+                        PricePerUnit = 1,
+                    }
+                }
+            }
         };
 
         [Fact]

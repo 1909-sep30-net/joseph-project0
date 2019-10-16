@@ -9,9 +9,13 @@ namespace Project0.Business
     /// </summary>
     public class Location
     {
-        private int _id; // locations ID
-        private string _name; // locations name
+        private int _id;        // locations ID
+        private string _name;   // locations name
 
+        /// <summary>
+        /// property of the _id field
+        /// throws an ArgumentEception for ids less than 0
+        /// </summary>
         public int Id
         {
             get => _id;
@@ -24,6 +28,10 @@ namespace Project0.Business
             }
         }
 
+        /// <summary>
+        /// property of the _name field
+        /// throws an ArgumentEception for names that are empty
+        /// </summary>
         public string Name
         {
             get => _name;
@@ -35,10 +43,21 @@ namespace Project0.Business
                 _name = value;
             }
         }
+
+        /// <summary>
+        /// list of all products for sale at this location
+        /// </summary>
         public List<ProductEntery> Inventory { get; set; } = new List<ProductEntery>();
 
+        /// <summary>
+        /// list of all orders placed at this location
+        /// </summary>
         public List<Order> Orders { get; set; } = new List<Order>();
 
+        /// <summary>
+        /// generated the totol sales made by this location
+        /// based on the oders made
+        /// </summary>
         public decimal Total
         {
             get
@@ -52,6 +71,11 @@ namespace Project0.Business
             }
         }
 
+        /// <summary>
+        /// validates the products befor adding placing it
+        /// all products must in an order must be in the inventoy and having enough in stock
+        /// </summary>
+        /// <param name="order">the order to be verifide</param>
         public void ValidateOrder(Order order)
         {
             foreach (ProductOrder product in order.ProductOrders)
@@ -66,6 +90,11 @@ namespace Project0.Business
             }
         }
 
+        /// <summary>
+        /// vilidates the order and places it into the locations history
+        /// reduces the inventory quantitys
+        /// </summary>
+        /// <param name="order">order to be placed at location</param>
         public void PlaceOrder (Order order)
         {
             ValidateOrder(order);
@@ -81,6 +110,10 @@ namespace Project0.Business
             Orders.Add(order);
         }
 
+        /// <summary>
+        /// adds a product to the locations inventory
+        /// </summary>
+        /// <param name="product">product to be add to location inventory</param>
         public void AddProduct(ProductEntery product)
         {
             if (Inventory.Contains(product))

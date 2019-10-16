@@ -2,15 +2,22 @@
 
 namespace Project0.Business
 {
+    /// <summary>
+    /// handles all the logic for a production order
+    /// </summary>
     public class ProductOrder
     {
-        private int _id;
-        private string _name;
-        private int _orderId;
-        private int _productId;
-        private int _quantity;
-        private decimal _pricePerUnit;
+        private int _id;                // id of the product order
+        private string _name;           // the name of the product
+        private int _orderId;           // the id of the oder this product belongs to
+        private int _productId;         // the id of the product
+        private int _quantity;          // the quantity of this product ordered
+        private decimal _pricePerUnit;  // price for one unit of this product
 
+        /// <summary>
+        /// property of the _name field
+        /// throws ArgumentException when name is empty
+        /// </summary>
         public string Name
         {
             get => _name;
@@ -23,6 +30,10 @@ namespace Project0.Business
             }
         }
 
+        /// <summary>
+        /// property of the _id field
+        /// throws ArgumentException when name is empty
+        /// </summary>
         public int Id
         {
             get => _id;
@@ -35,6 +46,10 @@ namespace Project0.Business
             }
         }
 
+        /// <summary>
+        /// property of the _orderId
+        /// throws ArgumentException for ids less than 0
+        /// </summary>
         public int OrderId
         {
             get => _orderId;
@@ -47,6 +62,10 @@ namespace Project0.Business
             }
         }
 
+        /// <summary>
+        /// property for the _productId
+        /// throws ArgumentException for product ids less than 0
+        /// </summary>
         public int ProductId
         {
             get => _productId;
@@ -59,6 +78,10 @@ namespace Project0.Business
             }
         }
 
+        /// <summary>
+        /// property for the _quantity field
+        /// throws ArgumentException for quantities less than 0
+        /// </summary>
         public int Quantity
         {
             get => _quantity;
@@ -71,6 +94,10 @@ namespace Project0.Business
             }
         }
 
+        /// <summary>
+        /// property for the _pricePerUnite field
+        /// throws ArgumentException for prices less than 0
+        /// </summary>
         public decimal PricePerUnit
         {
             get => _pricePerUnit;
